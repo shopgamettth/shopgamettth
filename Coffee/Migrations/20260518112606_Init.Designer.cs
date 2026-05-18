@@ -3,17 +3,17 @@ using System;
 using Coffee.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Coffee.Migrations
 {
     [DbContext(typeof(CoffeeShopDbContext))]
-    [Migration("20260518062212_InitGameShop")]
-    partial class InitGameShop
+    [Migration("20260518112606_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,26 +21,26 @@ namespace Coffee.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.25")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Coffee.Models.Cart", b =>
                 {
                     b.Property<int>("CartId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartId"));
 
                     b.Property<int?>("ProductId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("Quantity")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("CartId")
                         .HasName("PK__Cart__51BCD7B78CE3E0C9");
@@ -56,17 +56,17 @@ namespace Coffee.Migrations
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CategoryId"));
 
                     b.Property<string>("CategoryName")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Description")
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.HasKey("CategoryId")
                         .HasName("PK__Categori__19093A0BFCDC690C");
@@ -78,36 +78,36 @@ namespace Coffee.Migrations
                 {
                     b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderId"));
 
                     b.Property<DateTimeOffset?>("OrderDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetimeoffset")
-                        .HasDefaultValueSql("SYSDATETIMEOFFSET()");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("ReceiverName")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("ReceiverPhone")
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("ShippingAddress")
                         .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<string>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<decimal?>("TotalAmount")
                         .HasColumnType("decimal(10, 2)");
 
                     b.Property<int?>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("OrderId")
                         .HasName("PK__Orders__C3905BCFD629F690");
@@ -121,21 +121,21 @@ namespace Coffee.Migrations
                 {
                     b.Property<int>("OrderDetailId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderDetailId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderDetailId"));
 
                     b.Property<int?>("OrderId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(10, 2)");
 
                     b.Property<int?>("ProductId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("Quantity")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("OrderDetailId")
                         .HasName("PK__OrderDet__D3B9D36C4A8289BE");
@@ -151,24 +151,24 @@ namespace Coffee.Migrations
                 {
                     b.Property<int>("PaymentId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PaymentId"));
 
                     b.Property<int?>("OrderId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("PaymentMethod")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("PaymentStatus")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("TransactionId")
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.HasKey("PaymentId")
                         .HasName("PK__Payments__9B556A38C457EBCC");
@@ -182,38 +182,44 @@ namespace Coffee.Migrations
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProductId"));
 
                     b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExtraImages")
+                        .HasColumnType("text");
 
                     b.Property<string>("GamePassword")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("GameUsername")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("ImagePublicId")
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("ImageUrl")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<bool>("IsSold")
+                        .HasColumnType("boolean");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("ProductName")
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.HasKey("ProductId")
                         .HasName("PK__Products__B40CC6CD96392F1C");
@@ -227,13 +233,13 @@ namespace Coffee.Migrations
                 {
                     b.Property<int>("RoleId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RoleId"));
 
                     b.Property<string>("RoleName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("RoleId")
                         .HasName("PK__Roles__8AFACE1AE6AE9196");
@@ -241,17 +247,44 @@ namespace Coffee.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("Coffee.Models.Transaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Transactions");
+                });
+
             modelBuilder.Entity("Coffee.Models.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("Address")
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<decimal?>("Balance")
                         .ValueGeneratedOnAdd()
@@ -260,51 +293,51 @@ namespace Coffee.Migrations
 
                     b.Property<DateTimeOffset?>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetimeoffset")
-                        .HasDefaultValueSql("SYSDATETIMEOFFSET()");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<bool?>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
                     b.Property<bool?>("IsLocked")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<string>("LockReason")
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<DateTimeOffset?>("PasswordResetCodeExpiresAt")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PasswordResetCodeHash")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<int?>("RoleId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
+                        .HasColumnType("character varying(15)");
 
                     b.HasKey("UserId")
                         .HasName("PK__Users__1788CC4C30C383DF");
@@ -382,6 +415,17 @@ namespace Coffee.Migrations
                         .HasConstraintName("FK__Products__Catego__4222D4EF");
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Coffee.Models.Transaction", b =>
+                {
+                    b.HasOne("Coffee.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Coffee.Models.User", b =>
