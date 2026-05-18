@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-
 namespace Coffee.Data
 {
     public static class ProductSchemaInitializer
@@ -8,25 +7,13 @@ namespace Coffee.Data
         {
             using var scope = services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<CoffeeShopDbContext>();
-            
+
             var sqlIsSold = @"
-            IF NOT EXISTS (
-                SELECT * FROM sys.columns 
-                WHERE object_id = OBJECT_ID(N'[Products]') AND name = 'IsSold'
-            )
-            BEGIN
-                ALTER TABLE [Products] ADD [IsSold] bit NOT NULL DEFAULT 0;
-            END";
+            ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""IsSold"" boolean NOT NULL DEFAULT false;";
 
             var sqlExtraImages = @"
-            IF NOT EXISTS (
-                SELECT * FROM sys.columns 
-                WHERE object_id = OBJECT_ID(N'[Products]') AND name = 'ExtraImages'
-            )
-            BEGIN
-                ALTER TABLE [Products] ADD [ExtraImages] nvarchar(max) NULL;
-            END";
-            
+            ALTER TABLE ""Products"" ADD COLUMN IF NOT EXISTS ""ExtraImages"" text NULL;";
+
             await db.Database.ExecuteSqlRawAsync(sqlIsSold);
             await db.Database.ExecuteSqlRawAsync(sqlExtraImages);
         }
