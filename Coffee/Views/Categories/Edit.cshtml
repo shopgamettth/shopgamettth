@@ -1,0 +1,101 @@
+@model Coffee.Models.Category
+
+@{
+    ViewData["Title"] = "Chinh sua category";
+    Layout = "_ProductsCoffee";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Admin/admin-category.css" />
+}
+
+<div class="admin-category-shell container py-4 py-lg-5">
+    <section class="admin-category-hero admin-category-hero-compact">
+        <div>
+            <span class="admin-category-eyebrow">Edit category</span>
+            <h1>Cap nhat category</h1>
+            <p>Chinh lai ten hoac mo ta de category de hieu hon, khop hon voi cau truc menu va dashboard hien tai.</p>
+        </div>
+
+        <div class="admin-category-hero-actions">
+            <a asp-action="Details" asp-route-id="@Model.CategoryId" class="admin-ghost-button">
+                <i class="fas fa-eye"></i>
+                <span>Xem chi tiet</span>
+            </a>
+            <a asp-action="Index" class="admin-secondary-button">
+                <i class="fas fa-list"></i>
+                <span>Ve danh sach</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="admin-category-form-layout">
+        <article class="admin-category-form-card">
+            <div class="admin-category-form-head">
+                <div>
+                    <span class="admin-category-eyebrow">Category editor</span>
+                    <h2>Thong tin dang duoc chinh sua</h2>
+                    <p>Cap nhat truc tiep category hien co va luu lai de ap dung cho toan bo khu quan tri.</p>
+                </div>
+            </div>
+
+            <form asp-action="Edit" class="admin-category-form">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger admin-category-validation"></div>
+                <input type="hidden" asp-for="CategoryId" />
+
+                <div class="admin-category-field">
+                    <label asp-for="CategoryName" class="form-label">Ten category</label>
+                    <input asp-for="CategoryName" class="form-control" placeholder="Cap nhat ten category" />
+                    <span asp-validation-for="CategoryName" class="text-danger"></span>
+                </div>
+
+                <div class="admin-category-field">
+                    <label asp-for="Description" class="form-label">Mo ta ngan</label>
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="5"
+                              placeholder="Cap nhat mo ta de admin va nhan vien nhin la hieu ngay category nay dung de lam gi."></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="admin-category-form-actions">
+                    <a asp-action="Index" class="admin-secondary-button">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Quay lai</span>
+                    </a>
+                    <button type="submit" class="admin-primary-button">
+                        <i class="fas fa-save"></i>
+                        <span>Luu thay doi</span>
+                    </button>
+                </div>
+            </form>
+        </article>
+
+        <aside class="admin-category-side-card">
+            <div>
+                <span class="admin-category-eyebrow">Category info</span>
+                <h3>Thong tin nhanh</h3>
+                <p>Mot so chi tiet giup ban nho ro minh dang sua dung category nao trong he thong.</p>
+            </div>
+
+            <div class="admin-category-side-list">
+                <div class="admin-category-side-item">
+                    <strong>Ma category</strong>
+                    <p>ID hien tai: #@Model.CategoryId</p>
+                </div>
+                <div class="admin-category-side-item">
+                    <strong>Ten dang hien thi</strong>
+                    <p>@(string.IsNullOrWhiteSpace(Model.CategoryName) ? "Chua dat ten" : Model.CategoryName)</p>
+                </div>
+                <div class="admin-category-side-item">
+                    <strong>Mo ta hien tai</strong>
+                    <p>@(string.IsNullOrWhiteSpace(Model.Description) ? "Chua co mo ta cho category nay." : Model.Description)</p>
+                </div>
+            </div>
+        </aside>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

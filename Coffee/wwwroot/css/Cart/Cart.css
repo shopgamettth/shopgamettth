@@ -1,0 +1,187 @@
+﻿/* =========================
+   CART CONTAINER
+========================= */
+.container {
+    max-width: 1200px;
+}
+
+/* =========================
+   HEADER (BACK + SEARCH)
+========================= */
+#search-cart {
+    max-width: 250px;
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+    #search-cart:focus {
+        border-color: #ff4d4f;
+        box-shadow: 0 0 0 2px rgba(255,77,79,0.2);
+    }
+
+/* =========================
+   TABLE WRAPPER
+========================= */
+.border.rounded {
+    border-radius: 12px !important;
+    overflow: hidden;
+}
+
+/* =========================
+   TABLE
+========================= */
+table {
+    font-size: 14px;
+}
+
+thead th {
+    font-weight: 600;
+    background: #f8f9fa !important;
+}
+
+/* STICKY HEADER */
+thead.sticky-top {
+    top: 0;
+    z-index: 2;
+}
+
+/* ROW HOVER */
+tbody tr:hover {
+    background: #fafafa;
+}
+
+/* =========================
+   PRODUCT NAME
+========================= */
+.product-name {
+    font-weight: 500;
+}
+
+/* =========================
+   QUANTITY
+========================= */
+.input-group {
+    display: flex;
+}
+
+.quantity-input {
+    max-width: 50px;
+    font-weight: 500;
+}
+
+/* =========================
+   BUTTON
+========================= */
+.btn-minus,
+.btn-plus {
+    transition: 0.2s;
+}
+
+    .btn-minus:hover,
+    .btn-plus:hover {
+        background: #ff4d4f;
+        color: #fff;
+        border-color: #ff4d4f;
+    }
+
+/* DELETE */
+.btn-delete {
+    transition: 0.3s;
+}
+
+    .btn-delete:hover {
+        transform: scale(1.05);
+    }
+
+/* =========================
+   PRICE
+========================= */
+.subtotal {
+    font-size: 15px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+#cart-total {
+    font-size: 20px;
+}
+
+/* =========================
+   📱 MOBILE (<576px)
+========================= */
+@media (max-width: 575px) {
+
+    /* HEADER */
+    .d-flex.justify-content-between.mb-3 {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #search-cart {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* TABLE -> SCROLL ngang */
+    .border.rounded {
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 600px;
+    }
+
+    /* FOOTER */
+    .d-flex.justify-content-between.align-items-center.mt-4 {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    #cart-total {
+        font-size: 18px;
+    }
+}
+
+/* =========================
+   📲 TABLET
+========================= */
+@media (min-width: 576px) and (max-width: 991px) {
+
+    #search-cart {
+        max-width: 200px;
+    }
+
+    table {
+        font-size: 13px;
+    }
+
+    .quantity-input {
+        max-width: 45px;
+    }
+}
+
+/* =========================
+   💻 DESKTOP
+========================= */
+@media (min-width: 992px) {
+
+    table {
+        font-size: 14px;
+    }
+}
+
+/* =========================
+   🖥️ LARGE SCREEN
+========================= */
+@media (min-width: 1400px) {
+
+    .container {
+        max-width: 1320px;
+    }
+
+    table {
+        font-size: 15px;
+    }
+}

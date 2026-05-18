@@ -1,0 +1,89 @@
+@model Coffee.ViewModel.MomoReturnViewModel
+@{
+    Layout = "_ProductsCoffee";
+    var alertClass = Model.IsSuccess ? "alert-success" : "alert-warning";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Checkout/checkout.css" />
+}
+
+<div class="checkout-page container py-4 py-lg-5">
+    <div class="checkout-summary-card mb-4">
+        <div class="checkout-eyebrow">Ket qua thanh toan MoMo</div>
+        <h3 class="mb-2">@Model.Title</h3>
+        <p class="text-muted mb-0">@Model.Message</p>
+    </div>
+
+    <div class="alert @alertClass mb-4">
+        @if (Model.IsSuccess)
+        {
+            <text>Don hang da duoc MoMo ghi nhan thanh toan va da duoc cap nhat sang trang thai da thanh toan.</text>
+        }
+        else
+        {
+            <text>Neu giao dich chua thanh cong, don hang se duoc giu o trang thai chua thanh toan de ban co the thu lai sau.</text>
+        }
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <aside class="checkout-summary-card">
+                <h5 class="mb-3">Tom tat giao dich</h5>
+
+                <div class="checkout-result-list">
+                    <div class="checkout-result-item">
+                        <span>Don hang</span>
+                        <strong>#@Model.OrderId</strong>
+                    </div>
+
+                    <div class="checkout-result-item">
+                        <span>Trang thai don</span>
+                        <strong>@Model.OrderStatus</strong>
+                    </div>
+
+                    <div class="checkout-result-item">
+                        <span>Trang thai thanh toan</span>
+                        <strong>@Model.PaymentStatus</strong>
+                    </div>
+
+                    <div class="checkout-result-item">
+                        <span>Ma thanh toan doi tac</span>
+                        <strong>@Model.PartnerOrderId</strong>
+                    </div>
+
+                    <div class="checkout-result-item">
+                        <span>Ma giao dich MoMo</span>
+                        <strong>@(Model.MomoTransactionId > 0 ? Model.MomoTransactionId.ToString() : "Dang cap nhat")</strong>
+                    </div>
+
+                    <div class="checkout-result-item">
+                        <span>So tien</span>
+                        <strong>@Model.Amount.ToString("N0") đ</strong>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <div class="col-lg-7">
+            <section class="checkout-info-card">
+                <h5 class="mb-3">Tiep theo</h5>
+                <p class="text-muted mb-4">
+                    Trang nay nhan ket qua tra ve tu MoMo Business. Neu ban muon theo doi don sat hon, vao chi tiet don hang de xem trang thai moi nhat.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3">
+                    <a asp-controller="Orders" asp-action="Details" asp-route-id="@Model.OrderId" class="btn btn-danger">
+                        Xem chi tiet don
+                    </a>
+                    <a asp-controller="Orders" asp-action="Index" class="btn btn-outline-dark">
+                        Ve lich su don
+                    </a>
+                    <a asp-controller="Products" asp-action="Index" class="btn btn-outline-secondary">
+                        Tiep tuc mua sam
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

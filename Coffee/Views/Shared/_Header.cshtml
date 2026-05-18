@@ -1,0 +1,151 @@
+@inject Coffee.Data.CoffeeShopDbContext DbContext
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+    bool IsRoute(string controller, string action)
+    {
+        return string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase)
+            && string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase);
+    }
+
+    bool IsController(string controller)
+    {
+        return string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase);
+    }
+
+    var isAuthenticated = User?.Identity?.IsAuthenticated == true;
+    var isAdmin = User?.IsInRole("Admin") == true;
+    var currentUserName = User?.Identity?.Name ?? "Tài khoản";
+    var shortUserName = currentUserName.Length > 18 ? $"{currentUserName[..18]}..." : currentUserName;
+    var userInitial = string.IsNullOrWhiteSpace(currentUserName) ? "K" : currentUserName.Trim()[0].ToString().ToUpperInvariant();
+
+    var dbUser = isAuthenticated ? DbContext.Users.FirstOrDefault(u => u.UserName == currentUserName) : null;
+    var userBalance = dbUser?.Balance ?? 0;
+
+    var isHome = IsRoute("Home", "Index");
+    var isAbout = IsRoute("Home", "About");
+    var isService = IsRoute("Home", "Service");
+    var isProducts = IsController("Products");
+    var isReservation = IsRoute("Home", "Reservation");
+    var isContact = IsRoute("Home", "Contact");
+    var isLogin = IsRoute("Auth", "Login");
+    var isRegister = IsRoute("Auth", "Register");
+    var isCart = IsController("Cart") || IsController("Checkout");
+    var isOrders = IsController("Orders");
+    var isAdminPage = IsController("Admin");
+}
+
+<header class="coffee-topbar">
+    <nav class="navbar navbar-expand-lg coffee-navbar navbar-dark">
+        <div class="container-fluid coffee-navbar-shell">
+            <a asp-controller="Home" asp-action="Index" class="coffee-brand">
+                <span class="coffee-brand-mark"><i class="fas fa-gamepad"></i></span>
+                <span class="coffee-brand-copy">
+                    <strong>GAME STORE</strong>
+                    <small>Shop Acc FF & Liên Quân</small>
+                </span>
+            </a>
+
+            <button class="navbar-toggler coffee-nav-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#coffeeMainNav"
+                    aria-controls="coffeeMainNav"
+                    aria-expanded="false"
+                    aria-label="Mo menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+                <div class="collapse navbar-collapse" id="coffeeMainNav">
+                    <div class="navbar-nav coffee-nav-links mx-auto">
+                        <a asp-controller="Home" asp-action="Index" class="nav-item nav-link @(isHome ? "active" : null)">
+                            <i class="fas fa-home"></i>
+                            <span>Trang chủ</span>
+                        </a>
+                        <a asp-controller="Products" asp-action="Index" class="nav-item nav-link @(isProducts ? "active" : null)">
+                            <i class="fas fa-gamepad"></i>
+                            <span>Nick Game</span>
+                        </a>
+                        <a asp-controller="Home" asp-action="Service" class="nav-item nav-link @(isService ? "active" : null)">
+                            <i class="fas fa-wallet"></i>
+                            <span>Nạp TSR</span>
+                        </a>
+                        <a asp-controller="Home" asp-action="Momo" class="nav-item nav-link @(IsRoute("Home", "Momo") ? "active" : null)">
+                            <i class="fas fa-qrcode"></i>
+                            <span>Nạp MoMo</span>
+                        </a>
+                        <a href="https://zalo.me/0989767704" target="_blank" class="nav-item nav-link">
+                            <i class="fas fa-headset"></i>
+                            <span>Hỗ Trợ (Zalo)</span>
+                        </a>
+                    </div>
+
+                <div class="coffee-nav-actions">
+                    @if (!isAuthenticated)
+                    {
+                        <a asp-controller="Auth" asp-action="Register" class="coffee-action-pill coffee-action-soft @(isRegister ? "active" : null)">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Đăng ký</span>
+                        </a>
+                        <a asp-controller="Auth" asp-action="Login" class="coffee-action-pill @(isLogin ? "active" : null)">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Đăng Nhập</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Cart" asp-action="Index" class="coffee-action-pill coffee-cart-pill @(isCart ? "active" : null)">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>Giỏ Hàng</span>
+                            <span class="badge bg-danger cart-count">0</span>
+                        </a>
+
+                        <div class="nav-item dropdown coffee-user-menu">
+                            <a href="#"
+                               class="coffee-user-trigger dropdown-toggle"
+                               data-toggle="dropdown"
+                               aria-expanded="false">
+                                <span class="coffee-user-avatar">@userInitial</span>
+                                <span class="coffee-user-copy">
+                                    <strong>@shortUserName</strong>
+                                    <small class="text-warning fw-bold">@userBalance.ToString("N0") VNĐ</small>
+                                </span>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-right coffee-dropdown-menu">
+                                <a asp-controller="Orders" asp-action="Index" class="dropdown-item @(isOrders ? "active" : null)">
+                                    <i class="fas fa-box"></i>
+                                    <span>Don hang</span>
+                                </a>
+                                @if (isAdmin)
+                                {
+                                    <a asp-controller="Admin" asp-action="Index" class="dropdown-item @(isAdminPage ? "active" : null)">
+                                        <i class="fas fa-shield-alt"></i>
+                                        <span>Quan tri</span>
+                                    </a>
+                                }
+                                <a asp-controller="Auth" asp-action="Profile" class="dropdown-item">
+                                    <i class="fas fa-user"></i>
+                                    <span>Thông tin tài khoản</span>
+                                </a>
+                                <a asp-controller="Transactions" asp-action="Index" class="dropdown-item">
+                                    <i class="fas fa-history"></i>
+                                    <span>Lịch sử nạp & tiêu tiền</span>
+                                </a>
+                                <a asp-controller="Auth" asp-action="ChangePassword" class="dropdown-item">
+                                    <i class="fas fa-key"></i>
+                                    <span>Doi mat khau</span>
+                                </a>
+                                <a asp-controller="Auth" asp-action="Logout" class="dropdown-item text-danger">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Dang xuat</span>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

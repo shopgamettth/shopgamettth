@@ -1,0 +1,73 @@
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var title = "Khám phá GAME STORE";
+    var subtitle = "Tìm kiếm nhanh các tài khoản VIP, từ Free Fire đến Liên Quân với mức giá ưu đãi nhất.";
+    if (string.Equals(currentController, "Products", StringComparison.OrdinalIgnoreCase) && string.Equals(currentAction, "Index", StringComparison.OrdinalIgnoreCase))
+    {
+        title = "Danh Sách Account";
+        subtitle = "Lọc nick theo rank, theo giá hoặc tìm đúng loại tài khoản bạn cần chỉ trong vài giây.";
+    }
+    else if (string.Equals(currentController, "Products", StringComparison.OrdinalIgnoreCase) && string.Equals(currentAction, "Search", StringComparison.OrdinalIgnoreCase))
+    {
+        title = "Kết quả tìm kiếm";
+        subtitle = "Các tài khoản phù hợp với yêu cầu của bạn được hiển thị bên dưới.";
+    }
+    else if (string.Equals(currentController, "Products", StringComparison.OrdinalIgnoreCase) && string.Equals(currentAction, "Details", StringComparison.OrdinalIgnoreCase))
+    {
+        title = "Chi tiết Tài khoản";
+        subtitle = "Xem nhanh thông tin tướng, trang phục và thêm vào giỏ hàng ngay.";
+    }
+    else if (string.Equals(currentController, "Cart", StringComparison.OrdinalIgnoreCase))
+    {
+        title = "Giỏ hàng";
+        subtitle = "Kiểm tra lại tài khoản đã chọn và tiến hành thanh toán.";
+    }
+    else if (string.Equals(currentController, "Checkout", StringComparison.OrdinalIgnoreCase))
+    {
+        title = "Thanh toán";
+        subtitle = "Thông tin giao hàng và cách thanh toán được gom gọn để bạn xác nhận đơn dễ hơn.";
+    }
+    else if (string.Equals(currentController, "Orders", StringComparison.OrdinalIgnoreCase))
+    {
+        title = "Quản lý đơn hàng";
+        subtitle = "Theo dõi trạng thái đơn, xem lại chi tiết và quay về menu mua sắm bất kỳ lúc nào.";
+    }
+    else if (string.Equals(currentController, "Admin", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(currentController, "AdminProducts", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(currentController, "Categories", StringComparison.OrdinalIgnoreCase))
+    {
+        title = "Khu vực quản trị";
+        subtitle = "Thanh điều hướng được giữ thống nhất để việc quay lại dashboard và menu luôn thuận tay.";
+    }
+}
+<section class="coffee-page-toolbar">
+    <div class="coffee-page-toolbar-shell">
+        <div class="coffee-toolbar-copy">
+            <span class="coffee-toolbar-kicker">GAME STORE MENU</span>
+            <h1>@title</h1>
+            <p>@subtitle</p>
+        </div>
+        <div class="coffee-toolbar-links">
+            <a asp-controller="Home" asp-action="Index" class="coffee-toolbar-link">
+                <i class="fas fa-home"></i>
+                <span>Trang chủ</span>
+            </a>
+            <a asp-controller="Products" asp-action="Index" class="coffee-toolbar-link">
+                <i class="fas fa-gamepad"></i>
+                <span>Nick Game</span>
+            </a>
+            <a asp-controller="Cart" asp-action="Index" class="coffee-toolbar-link">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Giỏ hàng</span>
+            </a>
+            <a asp-controller="Orders" asp-action="Index" class="coffee-toolbar-link">
+                <i class="fas fa-receipt"></i>
+                <span>Đơn hàng</span>
+            </a>
+        </div>
+        <div class="coffee-toolbar-search">
+            @await Html.PartialAsync("~/Views/Products/_Search.cshtml")
+        </div>
+    </div>
+</section>

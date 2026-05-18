@@ -1,0 +1,254 @@
+@model Coffee.Models.Product
+
+@{
+    ViewData["Title"] = "Tao product";
+    Layout = "_ProductsCoffee";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Admin/admin-category.css" />
+    <link rel="stylesheet" href="~/css/Admin/admin-product.css" />
+}
+
+<div class="admin-product-shell container py-4 py-lg-5">
+    <section class="admin-product-hero admin-product-hero-compact">
+        <div>
+            <span class="admin-product-eyebrow">Create product</span>
+            <h1>Them san pham moi</h1>
+            <p>Tao nhanh mot mon moi voi hinh anh, gia, mo ta va category de menu cua ban nhin chuyen nghiep va day du hon.</p>
+        </div>
+
+        <div class="admin-product-hero-actions">
+            <a asp-controller="Admin" asp-action="Index" class="admin-ghost-button">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a asp-action="Index" class="admin-secondary-button">
+                <i class="fas fa-list"></i>
+                <span>Ve danh sach</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="admin-product-form-layout">
+        <article class="admin-product-form-card">
+            <div class="admin-product-form-head">
+                <div>
+                    <span class="admin-product-eyebrow">Product setup</span>
+                    <h2>Thong tin san pham</h2>
+                    <p>Nhap day du ten, gia, category va hinh anh de san pham len giao dien dep ngay tu dau.</p>
+                </div>
+            </div>
+
+            <form asp-action="Create" enctype="multipart/form-data" class="admin-product-form">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger admin-product-validation"></div>
+
+                <div class="admin-product-form-grid">
+                    <div class="admin-product-field">
+                        <label asp-for="ProductName" class="form-label">Ten san pham</label>
+                        <input asp-for="ProductName" class="form-control" placeholder="Vi du: Acc FF Vip 1" />
+                        <span asp-validation-for="ProductName" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-product-field">
+                        <label asp-for="GameUsername" class="form-label">Tai khoan dang nhap Game</label>
+                        <input asp-for="GameUsername" class="form-control" placeholder="Tai khoan game..." />
+                        <span asp-validation-for="GameUsername" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-product-field">
+                        <label asp-for="GamePassword" class="form-label">Mat khau dang nhap Game</label>
+                        <input asp-for="GamePassword" class="form-control" placeholder="Mat khau game..." />
+                        <span asp-validation-for="GamePassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-product-field">
+                        <label asp-for="Price" class="form-label">Gia ban</label>
+                        <input asp-for="Price"
+                               class="form-control"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               placeholder="45000" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-product-field">
+                        <label asp-for="CategoryId" class="form-label">Category</label>
+                        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
+                            <option value="">Chon category cho san pham</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-product-field admin-product-field-wide">
+                        <label asp-for="Description" class="form-label">Mo ta ngan</label>
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="Mo ta mui vi, texture hoac diem noi bat de admin va khach de nhan ra san pham hon."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-product-field admin-product-field-wide">
+                        <label class="form-label">Anh san pham</label>
+                        <div id="dropArea" class="admin-product-upload" role="button" tabindex="0">
+                            <input type="file" name="file" id="fileInput" hidden accept="image/*" />
+                            <div class="admin-product-upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <strong>Keo tha anh vao day hoac bam de chon file</strong>
+                            <p class="mb-1">Nen uu tien anh ro, vuong, nen sach de card san pham len dep hon.</p>
+                            <small id="fileHint">Chua co file nao duoc chon.</small>
+                        </div>
+                    </div>
+
+                    <div class="admin-product-field admin-product-field-wide mt-3">
+                        <label class="form-label">Ảnh phụ (Có thể chọn nhiều ảnh)</label>
+                        <input type="file" name="extraFiles" class="form-control" multiple accept="image/*" />
+                        <small class="text-muted">Chọn nhiều file cùng lúc để thêm hình ảnh chi tiết cho tài khoản.</small>
+                    </div>
+                </div>
+
+                <div class="admin-product-form-actions">
+                    <a asp-action="Index" class="admin-secondary-button">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Quay lai</span>
+                    </a>
+                    <button type="submit" class="admin-primary-button">
+                        <i class="fas fa-plus"></i>
+                        <span>Luu product moi</span>
+                    </button>
+                </div>
+            </form>
+        </article>
+
+        <aside class="admin-product-preview-card">
+            <div class="admin-product-preview-media">
+                <img id="preview" src="/img/default.png" alt="Preview san pham" />
+            </div>
+            <div id="extraFilesPreview" class="d-flex p-3" style="gap: 10px; overflow-x: auto;"></div>
+
+            <div class="admin-product-preview-body">
+                <span class="admin-product-eyebrow">Preview</span>
+                <strong>Khung xem truoc hinh anh</strong>
+                <p>Ban co the doi file nhieu lan truoc khi luu. Khung nay giup can nhanh ton mau va bo cuc anh ngay trong trang tao product.</p>
+            </div>
+
+            <div class="admin-product-side-list">
+                <div class="admin-product-side-item">
+                    <strong>Dat ten ro va ngan</strong>
+                    <p>Ten de doc se giup admin tim nhanh hon, dong thoi card san pham ngoai trang cung dep hon.</p>
+                </div>
+                <div class="admin-product-side-item">
+                    <strong>Gia nen dong nhat</strong>
+                    <p>Dung mot format gia ro rang de tranh lech thong tin giua trang chi tiet, gio hang va dashboard.</p>
+                </div>
+                <div class="admin-product-side-item">
+                    <strong>Category dung ngay tu dau</strong>
+                    <p>Gan nhom som se giup admin loc, thong ke va tim kiem san pham nhe hon rat nhieu.</p>
+                </div>
+            </div>
+        </aside>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (function () {
+            const dropArea = document.getElementById("dropArea");
+            const fileInput = document.getElementById("fileInput");
+            const preview = document.getElementById("preview");
+            const fileHint = document.getElementById("fileHint");
+            const priceInput = document.querySelector("input[name='Price']");
+
+            if (!dropArea || !fileInput || !preview || !fileHint) {
+                return;
+            }
+
+            const openPicker = () => fileInput.click();
+
+            dropArea.addEventListener("click", openPicker);
+            dropArea.addEventListener("keydown", (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    openPicker();
+                }
+            });
+
+            fileInput.addEventListener("change", () => {
+                showPreview(fileInput.files[0]);
+            });
+
+            dropArea.addEventListener("dragover", (event) => {
+                event.preventDefault();
+                dropArea.classList.add("is-dragover");
+            });
+
+            dropArea.addEventListener("dragleave", () => {
+                dropArea.classList.remove("is-dragover");
+            });
+
+            dropArea.addEventListener("drop", (event) => {
+                event.preventDefault();
+                dropArea.classList.remove("is-dragover");
+
+                if (!event.dataTransfer.files.length) {
+                    return;
+                }
+
+                fileInput.files = event.dataTransfer.files;
+                showPreview(event.dataTransfer.files[0]);
+            });
+
+            function showPreview(file) {
+                if (!file) {
+                    return;
+                }
+
+                if (!file.type.startsWith("image/")) {
+                    alert("Chi duoc chon file anh.");
+                    fileInput.value = "";
+                    fileHint.textContent = "Chua co file nao duoc chon.";
+                    return;
+                }
+
+                preview.src = URL.createObjectURL(file);
+                fileHint.textContent = file.name;
+            }
+
+            const extraFilesInput = document.querySelector("input[name='extraFiles']");
+            const extraFilesPreview = document.getElementById("extraFilesPreview");
+
+            if (extraFilesInput && extraFilesPreview) {
+                extraFilesInput.addEventListener("change", function () {
+                    extraFilesPreview.innerHTML = "";
+                    const files = this.files;
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        if (file.type.startsWith("image/")) {
+                            const img = document.createElement("img");
+                            img.src = URL.createObjectURL(file);
+                            img.style.width = "60px";
+                            img.style.height = "60px";
+                            img.style.objectFit = "cover";
+                            img.style.borderRadius = "8px";
+                            img.style.border = "1px solid rgba(255,255,255,0.2)";
+                            extraFilesPreview.appendChild(img);
+                        }
+                    }
+                });
+            }
+
+            if (priceInput) {
+                priceInput.addEventListener("input", function () {
+                    if (Number(this.value) < 0) {
+                        this.value = 0;
+                    }
+                });
+            }
+        })();
+    </script>
+}

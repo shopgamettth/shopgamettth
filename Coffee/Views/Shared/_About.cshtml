@@ -1,0 +1,309 @@
+@{
+    ViewData["Title"] = "Giới Thiệu";
+}
+
+<style>
+    .game-about-section {
+        background-color: #0b0f19;
+        color: #fff;
+        padding: 80px 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .game-about-bg-blur {
+        position: absolute;
+        top: -10%;
+        right: -10%;
+        width: 50%;
+        height: 60%;
+        background: radial-gradient(circle, rgba(255, 0, 85, 0.15) 0%, rgba(0,0,0,0) 70%);
+        z-index: 0;
+    }
+
+    .game-about-bg-blur-2 {
+        position: absolute;
+        bottom: -10%;
+        left: -10%;
+        width: 50%;
+        height: 60%;
+        background: radial-gradient(circle, rgba(0, 153, 255, 0.15) 0%, rgba(0,0,0,0) 70%);
+        z-index: 0;
+    }
+
+    .game-about-container {
+        position: relative;
+        z-index: 1;
+    }
+
+    .game-section-title {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .game-subtitle {
+        color: #ff0055;
+        font-weight: 800;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        font-size: 14px;
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .game-title {
+        font-size: 42px;
+        font-weight: 900;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        background: linear-gradient(to right, #ffffff, #a0a5ba);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .game-feature-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 40px 30px;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        height: 100%;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .game-feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255,0,85,0.1) 0%, rgba(0,0,0,0) 100%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    .game-feature-card:hover {
+        transform: translateY(-15px);
+        border-color: rgba(255, 0, 85, 0.5);
+        box-shadow: 0 20px 40px rgba(255, 0, 85, 0.15);
+    }
+
+    .game-feature-card:hover::before {
+        opacity: 1;
+    }
+
+    .game-icon-box {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #ff0055 0%, #ff7b00 100%);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        font-size: 32px;
+        color: white;
+        box-shadow: 0 10px 20px rgba(255, 0, 85, 0.3);
+        transform: rotate(-10deg);
+        transition: transform 0.4s ease;
+    }
+
+    .game-feature-card:hover .game-icon-box {
+        transform: rotate(0deg) scale(1.1);
+    }
+
+    .game-feature-title {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: #fff;
+    }
+
+    .game-feature-text {
+        color: #a0a5ba;
+        line-height: 1.7;
+        margin-bottom: 0;
+        font-size: 15px;
+    }
+
+    .game-showcase {
+        margin-top: 80px;
+        border-radius: 24px;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    }
+
+    .game-showcase img {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+        transition: transform 0.8s ease;
+    }
+
+    .game-showcase:hover img {
+        transform: scale(1.05);
+    }
+
+    .game-showcase-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 60px 40px 40px;
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+    }
+
+    .game-showcase-title {
+        font-size: 36px;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+    .game-btn {
+        background: linear-gradient(135deg, #ff0055 0%, #ff7b00 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+    }
+
+    .game-btn i {
+        margin-left: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    .game-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(255, 0, 85, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .game-btn:hover i {
+        transform: translateX(5px);
+    }
+
+    .game-stats {
+        display: flex;
+        justify-content: center;
+        gap: 50px;
+        margin-top: 60px;
+        flex-wrap: wrap;
+    }
+
+    .game-stat-item {
+        text-align: center;
+    }
+
+    .game-stat-number {
+        font-size: 48px;
+        font-weight: 900;
+        background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 5px;
+    }
+
+    .game-stat-label {
+        color: #a0a5ba;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 14px;
+    }
+</style>
+
+<div class="game-about-section">
+    <div class="game-about-bg-blur"></div>
+    <div class="game-about-bg-blur-2"></div>
+    
+    <div class="container game-about-container">
+        <div class="game-section-title">
+            <span class="game-subtitle">Hệ Thống Mua Bán Acc Uy Tín</span>
+            <h2 class="game-title">Đỉnh Cao Tài Khoản Game</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                Chúng tôi chuyên cung cấp các tài khoản Free Fire, Liên Quân Mobile VIP nhất với giá cả học sinh. Giao dịch tự động, nhanh chóng và an toàn tuyệt đối.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="game-feature-card">
+                    <div class="game-icon-box">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="game-feature-title">Giao Dịch Siêu Tốc</h3>
+                    <p class="game-feature-text">
+                        Hệ thống xử lý tự động 100%. Tiền vào tài khoản cực nhanh, mua nick nhận tài khoản và mật khẩu ngay lập tức không cần chờ đợi admin.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="game-feature-card">
+                    <div class="game-icon-box" style="background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="game-feature-title">Bảo Mật Tuyệt Đối</h3>
+                    <p class="game-feature-text">
+                        Tất cả nick đều được kiểm tra kỹ lưỡng (Trắng TT). Chúng tôi cam kết bảo hành 100% nếu có lỗi từ hệ thống, an toàn tuyệt đối cho người chơi.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="game-feature-card">
+                    <div class="game-icon-box" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h3 class="game-feature-title">Chất Lượng Cực Phẩm</h3>
+                    <p class="game-feature-text">
+                        Sở hữu những acc sở hữu skin siêu hiếm, rank cao thủ, thách đấu với mức giá không thể rẻ hơn. Update nick mới mỗi ngày.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-showcase">
+            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop" alt="Game Showcase">
+            <div class="game-showcase-overlay">
+                <h3 class="game-showcase-title">Sẵn Sàng Tham Chiến?</h3>
+                <p class="text-light mb-4" style="max-width: 500px; opacity: 0.9;">
+                    Đừng để rank thấp hay thiếu skin làm giảm phong độ của bạn. Tậu ngay acc xịn để gánh team thôi nào!
+                </p>
+                <a href="/Products" class="game-btn">
+                    Mua Acc Ngay <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="game-stats">
+            <div class="game-stat-item">
+                <div class="game-stat-number">99K+</div>
+                <div class="game-stat-label">Acc Đã Bán</div>
+            </div>
+            <div class="game-stat-item">
+                <div class="game-stat-number">24/7</div>
+                <div class="game-stat-label">Hỗ Trợ Tự Động</div>
+            </div>
+            <div class="game-stat-item">
+                <div class="game-stat-number">100%</div>
+                <div class="game-stat-label">Bảo Mật Uy Tín</div>
+            </div>
+        </div>
+    </div>
+</div>

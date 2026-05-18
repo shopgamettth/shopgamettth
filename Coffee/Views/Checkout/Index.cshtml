@@ -1,0 +1,105 @@
+@model Coffee.ViewModel.CheckoutViewModel
+@{
+    Layout = "_ProductsCoffee";
+    var selectedPaymentMethod = (Model.PaymentMethod ?? string.Empty).ToUpperInvariant() == "MOMO" ? "MOMO" : "COD";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Checkout/checkout.css" />
+}
+
+<div class="checkout-page container py-4 py-lg-5">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="checkout-section-title">
+                <h4 class="mb-0">San pham da chon</h4>
+                <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-dark btn-sm">Quay lai gio hang</a>
+            </div>
+
+            <div class="checkout-info-card mb-4" style="display:none;">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <input asp-for="ReceiverName" class="form-control" form="checkout-form" value="Digital Delivery" />
+                    </div>
+                    <div class="col-md-6">
+                        <input asp-for="ReceiverPhone" class="form-control" form="checkout-form" value="0989767704" />
+                    </div>
+                    <div class="col-12">
+                        <textarea asp-for="ShippingAddress" class="form-control" form="checkout-form">Giao hàng kỹ thuật số (Mua tài khoản)</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <section class="checkout-products-panel">
+                <div class="checkout-products-panel-header">
+                    <div>
+                        <h5 class="mb-1">Danh sach san pham</h5>
+                        <p class="text-muted mb-0">Neu don co nhieu mon, ban cuon ben trong khung nay de phan nhap thong tin va thanh toan van gon o tren.</p>
+                    </div>
+
+                    <span class="checkout-chip">@Model.Items.Count san pham</span>
+                </div>
+
+                <div class="checkout-products-scroll">
+                    <div class="checkout-products-list">
+                        @foreach (var item in Model.Items)
+                        {
+                            <article class="checkout-product-card">
+                                <div class="checkout-product-main">
+                                    <div class="checkout-product-name">@item.ProductName</div>
+                                    <div class="checkout-product-meta">Don gia: @item.Price.ToString("N0") đ</div>
+                                </div>
+
+                                <div class="checkout-product-qty">x @item.Quantity</div>
+                                <div class="checkout-product-subtotal">@item.SubTotal.ToString("N0") đ</div>
+                            </article>
+                        }
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="checkout-summary-card">
+                <h4 class="mb-3" data-summary-heading>Thanh toan COD</h4>
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <form id="checkout-form" asp-action="Index" method="post">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="SelectedItemsJson" type="hidden" />
+
+                    <div class="checkout-method-group mb-3">
+                        <label class="checkout-method-card">
+                            <input type="radio" name="PaymentMethod" value="BALANCE" checked />
+                            <span class="checkout-method-content">
+                                <strong>Thanh toán bằng Số dư</strong>
+                                <small>Số dư tài khoản hiện tại của bạn sẽ bị trừ</small>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tong tien</span>
+                        <strong class="text-danger">@Model.Total.ToString("N0") VNĐ</strong>
+                    </div>
+
+                    <div class="checkout-payment-note p-3 mb-2">
+                        <div class="small text-muted" data-payment-note-body>
+                            Sau khi thanh toán thành công, bạn có thể xem tài khoản và mật khẩu game trong phần Chi tiết đơn hàng.
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-danger w-100 mt-3" data-submit-order>
+                        Mua Ngay
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/Checkout/checkout.js" asp-append-version="true"></script>
+}

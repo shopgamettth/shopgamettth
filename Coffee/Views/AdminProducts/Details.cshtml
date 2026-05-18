@@ -1,0 +1,109 @@
+@model Coffee.Models.Product
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Chi tiet product";
+    Layout = "_ProductsCoffee";
+
+    var imageUrl = string.IsNullOrWhiteSpace(Model.ImageUrl) ? "/img/default.png" : Model.ImageUrl;
+    var productName = string.IsNullOrWhiteSpace(Model.ProductName) ? "San pham chua dat ten" : Model.ProductName.Trim();
+    var description = string.IsNullOrWhiteSpace(Model.Description) ? "Chua co mo ta cho san pham nay." : Model.Description.Trim();
+    var categoryName = Model.Category?.CategoryName ?? "Chua gan category";
+    var totalSold = Model.OrderDetails?.Sum(x => x.Quantity ?? 0) ?? 0;
+    var cartCount = Model.Carts?.Count ?? 0;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Admin/admin-category.css" />
+    <link rel="stylesheet" href="~/css/Admin/admin-product.css" />
+}
+
+<div class="admin-product-shell container py-4 py-lg-5">
+    <section class="admin-product-hero admin-product-hero-compact">
+        <div>
+            <span class="admin-product-eyebrow">Product detail</span>
+            <h1>Thong tin chi tiet san pham</h1>
+            <p>Xem nhanh toan bo thong tin, tinh trang category va muc do su dung cua product trong don hang va gio hang.</p>
+        </div>
+
+        <div class="admin-product-hero-actions">
+            <a asp-action="Index" class="admin-secondary-button">
+                <i class="fas fa-list"></i>
+                <span>Ve danh sach</span>
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model.ProductId" class="admin-primary-button">
+                <i class="fas fa-pen"></i>
+                <span>Chinh sua</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="admin-product-detail-grid">
+        <article class="admin-product-detail-card">
+            <div class="admin-product-detail-media">
+                <img src="@imageUrl" alt="@productName" />
+            </div>
+
+            <div class="admin-product-detail-body">
+                <span class="admin-product-eyebrow">Product snapshot</span>
+                <h2>@productName</h2>
+
+                <div class="admin-product-detail-pills">
+                    <span class="admin-product-badge is-dark">@Model.Price.ToString("N0") đ</span>
+                    <span class="admin-product-badge @(Model.CategoryId.HasValue ? null : "is-soft")">@categoryName</span>
+                    <span class="admin-product-badge @(totalSold > 0 ? null : "is-soft")">@totalSold da ban</span>
+                    <span class="admin-product-badge @(cartCount > 0 ? null : "is-soft")">@cartCount trong gio</span>
+                </div>
+
+                <dl class="admin-product-detail-list">
+                    <div class="admin-product-info-row">
+                        <dt>Mo ta</dt>
+                        <dd>@description</dd>
+                    </div>
+                    <div class="admin-product-info-row">
+                        <dt>ID san pham</dt>
+                        <dd>#@Model.ProductId</dd>
+                    </div>
+                    <div class="admin-product-info-row">
+                        <dt>Link hinh anh</dt>
+                        <dd>@imageUrl</dd>
+                    </div>
+                </dl>
+            </div>
+        </article>
+
+        <aside class="admin-product-side-card">
+            <div>
+                <span class="admin-product-eyebrow">Quick stats</span>
+                <h3>Goc nhin nhanh cho admin</h3>
+                <p>Day la nhung thong tin giup ban quyet dinh nen giu, sua hay sap xep lai product vao category phu hop hon.</p>
+            </div>
+
+            <div class="admin-product-side-list">
+                <div class="admin-product-side-item">
+                    <strong>Category hien tai</strong>
+                    <p>@categoryName</p>
+                </div>
+                <div class="admin-product-side-item">
+                    <strong>So lan duoc dat</strong>
+                    <p>@totalSold san pham da xuat hien trong lich su don.</p>
+                </div>
+                <div class="admin-product-side-item">
+                    <strong>Trang thai gio hang</strong>
+                    <p>@(cartCount > 0 ? $"{cartCount} gio hang dang chua mon nay." : "Hien khong co gio hang nao chua san pham nay.")</p>
+                </div>
+            </div>
+
+            <div class="admin-category-inline-actions">
+                <a asp-action="Edit" asp-route-id="@Model.ProductId" class="admin-primary-button">
+                    <i class="fas fa-pen"></i>
+                    <span>Chinh sua product</span>
+                </a>
+                <a asp-action="Delete" asp-route-id="@Model.ProductId" class="admin-danger-button">
+                    <i class="fas fa-trash-alt"></i>
+                    <span>Mo trang xoa</span>
+                </a>
+            </div>
+        </aside>
+    </section>
+</div>

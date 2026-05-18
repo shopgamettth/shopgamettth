@@ -1,0 +1,52 @@
+﻿/* --- Nút Back to Home Custom Style --- */
+.back-home-wrapper {
+    padding: 20px 0 0 20px; /* Cách lề trên và trái */
+    position: relative;
+    z-index: 999;
+}
+
+.btn-back-home {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: #33211d; /* Màu nâu cafe */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    padding: 10px 20px;
+    border: 2px solid #da9f5b; /* Màu vàng đồng */
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.8); /* Nền trắng mờ để nổi bật trên ảnh nền */
+}
+
+    .btn-back-home i {
+        margin-right: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    /* Animation khi hover */
+    .btn-back-home:hover {
+        background-color: #da9f5b;
+        color: #fff;
+        box-shadow: 0 5px 15px rgba(218, 159, 91, 0.4);
+        text-decoration: none;
+    }
+
+        /* Icon dịch chuyển qua lại khi hover */
+        .btn-back-home:hover i {
+            transform: translateX(-5px);
+        }
+
+.products-main {
+    padding: 0 clamp(1rem, 4vw, 3rem) 2.5rem;
+}
+
+@media (max-width: 767.98px) {
+    .back-home-wrapper {
+        padding: 16px 0 0 16px;
+    }
+
+    .products-main {
+        padding: 0 0.875rem 2rem;
+    }
+}

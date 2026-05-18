@@ -1,0 +1,138 @@
+:root {
+    --primary: #f0c14b; /* Gold/Yellow for FF/LQ */
+    --secondary: #d32f2f; /* Red */
+    --dark: #121212;
+    --light: #f5f5f5;
+}
+
+body {
+    background-color: var(--dark) !important;
+    color: var(--light) !important;
+}
+
+.coffee-navbar {
+    background: linear-gradient(135deg, #1f1f1f, #2d2d2d) !important;
+    border-bottom: 2px solid var(--secondary) !important;
+}
+
+.coffee-brand-copy strong {
+    color: var(--primary) !important;
+    text-shadow: 0 0 5px rgba(240, 193, 75, 0.5);
+}
+
+.coffee-brand-mark {
+    background: var(--secondary) !important;
+    color: #fff !important;
+}
+
+.nav-item.nav-link {
+    color: #fff !important;
+}
+
+.nav-item.nav-link:hover, .nav-item.nav-link.active {
+    color: var(--primary) !important;
+    text-shadow: 0 0 8px rgba(240, 193, 75, 0.6);
+}
+
+.coffee-action-pill {
+    background: var(--secondary) !important;
+    color: #fff !important;
+    border: none !important;
+}
+
+.coffee-action-pill:hover {
+    background: #b71c1c !important;
+    box-shadow: 0 0 10px rgba(211, 47, 47, 0.6);
+}
+
+/* Update text colors to be legible on dark mode */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary) !important;
+}
+
+.card, .admin-product-form-card, .admin-product-preview-card, .order-summary-card, .order-items-card {
+    background-color: #1e1e1e !important;
+    border: 1px solid #333 !important;
+    color: #fff !important;
+}
+
+.form-control, .form-control:focus {
+    background-color: #2c2c2c !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+.form-label, .admin-product-field label {
+    color: #aaa !important;
+}
+
+.text-muted {
+    color: #888 !important;
+}
+
+.order-item-meta, .order-item-name {
+    color: #ddd !important;
+}
+
+.bg-light {
+    background-color: #2c2c2c !important;
+}
+
+.border {
+    border-color: #444 !important;
+}
+
+/* Specific elements from Views */
+.admin-product-eyebrow, .orders-eyebrow {
+    color: var(--secondary) !important;
+}
+
+.admin-primary-button, .btn-primary {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #000 !important;
+    font-weight: bold;
+}
+
+.admin-primary-button:hover, .btn-primary:hover {
+    background-color: #e5a700 !important;
+    border-color: #e5a700 !important;
+}
+
+.order-item-row {
+    border-bottom: 1px solid #333 !important;
+}
+
+.page-header {
+    background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.8)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop') center center no-repeat !important;
+    background-size: cover !important;
+}
+
+.footer, .overlay-top {
+    background: #111 !important;
+    background-image: none !important;
+}
+
+.game-title-hot {
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 2rem 0;
+    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    background-size: 400%;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: glowing-text 10s linear infinite;
+    text-shadow: 2px 2px 10px rgba(255, 0, 0, 0.3);
+}
+
+@keyframes glowing-text {
+    0% { background-position: 0 0; }
+    50% { background-position: 400% 0; }
+    100% { background-position: 0 0; }
+}
+
+.text-dark {
+    color: #fff !important;
+}

@@ -1,0 +1,10 @@
+D:\Lập trình web c# asp.net\Coffee\.codex-build\obj\Debug\net8.0\Coffee.csproj.AssemblyReference.cache
+D:\Lập trình web c# asp.net\Coffee\.codex-build\obj\Debug\net8.0\rpswa.dswa.cache.json
+D:\Lập trình web c# asp.net\Coffee\.codex-build\obj\Debug\net8.0\Coffee.GeneratedMSBuildEditorConfig.editorconfig
+D:\Lập trình web c# asp.net\Coffee\.codex-build\obj\Debug\net8.0\Coffee.AssemblyInfoInputs.cache
+D:\Lập trình web c# asp.net\Coffee\.codex-build\obj\Debug\net8.0\Coffee.AssemblyInfo.cs
+D:\Lập trình web c# asp.net\Coffee\.codex-build\obj\Debug\net8.0\Coffee.csproj.CoreCompileInputs.cache
+D:\Lập trình web c# asp.net\Coffee\.codex-build\obj\Debug\net8.0\Coffee.MvcApplicationPartsAssemblyInfo.cache
+D:\Lập trình web c# asp.net\Coffee\.codex-build\obj\Debug\net8.0\Coffee.RazorAssemblyInfo.cache
+D:\Lập trình web c# asp.net\Coffee\.codex-build\obj\Debug\net8.0\Coffee.RazorAssemblyInfo.cs
+D:\Lập trình web c# asp.net\Coffee\.codex-build\obj\Debug\net8.0\Coffee.sourcelink.json

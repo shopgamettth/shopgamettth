@@ -1,0 +1,105 @@
+using Coffee.Data;
+using Coffee.Models;
+using Coffee.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
+
+internal class Program
+{
+    private static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+
+        // Chi ep port khi deploy co bien PORT (Render).
+        // Local thi de Visual Studio / launchSettings quan ly URL.
+        var port = Environment.GetEnvironmentVariable("PORT");
+        if (!string.IsNullOrWhiteSpace(port))
+        {
+            builder.WebHost.UseUrls($"http://+:{port}");
+        }
+
+        // =========================
+        // ADD SERVICES
+        // =========================
+        builder.Services.AddControllersWithViews();
+
+        // DB
+        var myConnectionString = builder.Configuration.GetConnectionString("MyConnectString");
+        if (string.IsNullOrWhiteSpace(myConnectionString))
+        {
+            throw new InvalidOperationException("Connection string 'MyConnectString' was not found.");
+        }
+
+        builder.Services.AddDbContext<CoffeeShopDbContext>(options =>
+            options.UseNpgsql(myConnectionString));
+        //options.UseSqlServer(myConnectionString));
+
+        builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+        builder.Services.Configure<MomoPaymentSettings>(builder.Configuration.GetSection("MomoPaymentSettings"));
+        builder.Services.Configure<MomoBusinessSettings>(builder.Configuration.GetSection("MomoBusinessSettings"));
+
+        builder.Services.AddTransient<EmailService>();
+        builder.Services.AddHttpClient<MomoBusinessService>();
+        builder.Services.AddSingleton<CloudinaryService>();
+
+        // =========================
+        // COOKIE AUTH
+        // =========================
+        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Auth/Login";
+                options.AccessDeniedPath = "/NotFound";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.SlidingExpiration = true;
+
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Strict;
+            });
+
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+        });
+
+        var app = builder.Build();
+
+        DateTimeOffsetSchemaInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
+        PasswordResetSchemaInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
+        TransactionSchemaInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
+        ProductSchemaInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
+        OrderStatusDataInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
+        RoleDataInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
+
+        // =========================
+        // PIPELINE
+        // =========================
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseExceptionHandler("/Home/Error");
+            app.UseHsts();
+        }
+
+        app.UseForwardedHeaders();
+        app.UseHttpsRedirection();
+        app.UseStaticFiles();
+
+        app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        // =========================
+        // ROUTE
+        // =========================
+        app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
+
+        app.MapFallbackToController("NotFound", "Home");
+        app.Run();
+    }
+}

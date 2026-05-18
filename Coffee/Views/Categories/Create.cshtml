@@ -1,0 +1,100 @@
+@model Coffee.Models.Category
+
+@{
+    ViewData["Title"] = "Tao category";
+    Layout = "_ProductsCoffee";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Admin/admin-category.css" />
+}
+
+<div class="admin-category-shell container py-4 py-lg-5">
+    <section class="admin-category-hero admin-category-hero-compact">
+        <div>
+            <span class="admin-category-eyebrow">Create category</span>
+            <h1>Tao category moi</h1>
+            <p>Them mot nhom san pham moi de phan loai menu gon gang hon va de admin quan ly noi dung de dang hon.</p>
+        </div>
+
+        <div class="admin-category-hero-actions">
+            <a asp-controller="Admin" asp-action="Index" class="admin-ghost-button">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a asp-action="Index" class="admin-secondary-button">
+                <i class="fas fa-list"></i>
+                <span>Ve danh sach</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="admin-category-form-layout">
+        <article class="admin-category-form-card">
+            <div class="admin-category-form-head">
+                <div>
+                    <span class="admin-category-eyebrow">Category setup</span>
+                    <h2>Thong tin co ban</h2>
+                    <p>Nhap ten va mo ta ngan de category moi de hieu, de tim kiem va de noi bo team quan ly nhanh hon.</p>
+                </div>
+            </div>
+
+            <form asp-action="Create" class="admin-category-form">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger admin-category-validation"></div>
+
+                <div class="admin-category-field">
+                    <label asp-for="CategoryName" class="form-label">Ten category</label>
+                    <input asp-for="CategoryName" class="form-control" placeholder="Vi du: Ca phe truyen thong" />
+                    <span asp-validation-for="CategoryName" class="text-danger"></span>
+                </div>
+
+                <div class="admin-category-field">
+                    <label asp-for="Description" class="form-label">Mo ta ngan</label>
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="5"
+                              placeholder="Mo ta muc dich, nhom mon hoac cach su dung category nay trong he thong."></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="admin-category-form-actions">
+                    <a asp-action="Index" class="admin-secondary-button">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Quay lai</span>
+                    </a>
+                    <button type="submit" class="admin-primary-button">
+                        <i class="fas fa-plus"></i>
+                        <span>Luu category moi</span>
+                    </button>
+                </div>
+            </form>
+        </article>
+
+        <aside class="admin-category-side-card">
+            <div>
+                <span class="admin-category-eyebrow">Quick guide</span>
+                <h3>Goi y de category dep va de dung</h3>
+                <p>Mot category ro rang se giup phan trang menu, dashboard va thao tac chinh sua san pham gon hon rat nhieu.</p>
+            </div>
+
+            <div class="admin-category-side-list">
+                <div class="admin-category-side-item">
+                    <strong>Dat ten ngan gon</strong>
+                    <p>Uu tien ten ngan, de doc va phan biet nhanh khi admin tim category trong bang.</p>
+                </div>
+                <div class="admin-category-side-item">
+                    <strong>Mo ta noi dung category</strong>
+                    <p>Mo ta ngan se giup team biet category nay dung cho nhom mon nao ma khong can mo tung san pham.</p>
+                </div>
+                <div class="admin-category-side-item">
+                    <strong>Giu quy tac thong nhat</strong>
+                    <p>Neu da co category theo kieu "Da xay", "Pha may", "Tra", hay giu format ten dong deu de giao dien nhin chuyen nghiep hon.</p>
+                </div>
+            </div>
+        </aside>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

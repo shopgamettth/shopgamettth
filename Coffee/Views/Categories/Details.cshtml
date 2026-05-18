@@ -1,0 +1,90 @@
+@model Coffee.Models.Category
+
+@{
+    ViewData["Title"] = "Chi tiet category";
+    Layout = "_ProductsCoffee";
+    var productCount = Model.Products?.Count ?? 0;
+    var description = string.IsNullOrWhiteSpace(Model.Description)
+        ? "Chua co mo ta cho category nay."
+        : Model.Description.Trim();
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Admin/admin-category.css" />
+}
+
+<div class="admin-category-shell container py-4 py-lg-5">
+    <section class="admin-category-hero admin-category-hero-compact">
+        <div>
+            <span class="admin-category-eyebrow">Category details</span>
+            <h1>@(string.IsNullOrWhiteSpace(Model.CategoryName) ? "Category" : Model.CategoryName)</h1>
+            <p>Xem nhanh thong tin, so san pham dang gan category va quay lai khu quan tri chi voi vai thao tac ngan gon.</p>
+        </div>
+
+        <div class="admin-category-hero-actions">
+            <a asp-action="Edit" asp-route-id="@Model.CategoryId" class="admin-primary-button">
+                <i class="fas fa-pen"></i>
+                <span>Chinh sua</span>
+            </a>
+            <a asp-action="Index" class="admin-secondary-button">
+                <i class="fas fa-list"></i>
+                <span>Ve danh sach</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="admin-category-detail-grid">
+        <article class="admin-category-detail-card">
+            <div class="admin-category-detail-meta">
+                <span class="admin-category-pill is-dark">
+                    <i class="fas fa-hashtag"></i>
+                    <span>ID #@Model.CategoryId</span>
+                </span>
+                <span class="admin-category-pill">
+                    <i class="fas fa-box-open"></i>
+                    <span>@productCount san pham</span>
+                </span>
+            </div>
+
+            <h3>Thong tin category</h3>
+
+            <dl>
+                <dt>Ten category</dt>
+                <dd>@(string.IsNullOrWhiteSpace(Model.CategoryName) ? "Chua co ten" : Model.CategoryName)</dd>
+
+                <dt>Mo ta</dt>
+                <dd>@description</dd>
+            </dl>
+        </article>
+
+        <aside class="admin-category-side-card">
+            <div>
+                <span class="admin-category-eyebrow">Quick actions</span>
+                <h3>Thao tac lien quan</h3>
+                <p>Tu day ban co the di tiep den khu sua category hoac xoa category neu can don dep du lieu.</p>
+            </div>
+
+            <div class="admin-category-side-list">
+                <div class="admin-category-side-item">
+                    <strong>Trang thai su dung</strong>
+                    <p>@(productCount > 0 ? "Category dang duoc gan cho san pham." : "Category nay hien chua gan san pham nao.")</p>
+                </div>
+                <div class="admin-category-side-item">
+                    <strong>Dieu huong nhanh</strong>
+                    <p>Ban nen sua category neu muon doi ten, hoac quay lai danh sach de tiep tuc quan ly nhieu nhom cung luc.</p>
+                </div>
+            </div>
+
+            <div class="admin-category-inline-actions">
+                <a asp-action="Edit" asp-route-id="@Model.CategoryId" class="admin-primary-button">
+                    <i class="fas fa-pen"></i>
+                    <span>Chinh sua category</span>
+                </a>
+                <a asp-action="Delete" asp-route-id="@Model.CategoryId" class="admin-ghost-button">
+                    <i class="fas fa-trash-alt"></i>
+                    <span>Di den trang xoa</span>
+                </a>
+            </div>
+        </aside>
+    </section>
+</div>

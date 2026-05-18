@@ -1,0 +1,109 @@
+@model Coffee.DTO.ProductDTO
+
+@{
+    ViewData["Title"] = "Chi tiet san pham";
+    Layout = "_ProductsCoffee";
+    var productDescription = string.IsNullOrWhiteSpace(Model.Description)
+        ? "Mon duoc trinh bay gon gang de ban chon nhanh, dat mon de va theo doi don hang thoai mai hon tren moi thiet bi."
+        : Model.Description.Trim();
+    var productImage = string.IsNullOrWhiteSpace(Model.ImageUrl)
+        ? Url.Content("~/img/menu-1.jpg")
+        : Model.ImageUrl;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Products/product-details.css" />
+}
+
+<section class="product-detail-page">
+    <div class="container product-detail-container py-4 py-lg-5">
+        <div class="product-detail-shell">
+            <div class="product-detail-visual">
+                <div class="product-detail-image-card">
+                    <div class="product-detail-image-wrap">
+                        <img id="mainImage" src="@productImage" alt="@Model.ProductName" style="width:100%; object-fit:cover; border-radius: 8px;" />
+                    </div>
+                    @if(Model.ExtraImageUrls != null && Model.ExtraImageUrls.Any()) {
+                        <div class="d-flex mt-3" style="overflow-x:auto; gap:10px; padding-bottom:10px;">
+                            @foreach(var img in Model.ExtraImageUrls) {
+                                <img src="@img" style="width:80px; height:80px; min-width:80px; object-fit:cover; border-radius:8px; cursor:pointer; border:2px solid transparent;" onclick="document.getElementById('mainImage').src=this.src" />
+                            }
+                        </div>
+                    }
+
+                    <div class="product-detail-image-footer">
+                        <span class="product-detail-chip">
+                            <i class="fas fa-shield-alt"></i>
+                            Bảo hành 100%
+                        </span>
+                        <span class="product-detail-chip product-detail-chip-soft">
+                            <i class="fas fa-bolt"></i>
+                            Giao tài khoản tự động
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-detail-content">
+                <div class="product-detail-card">
+                    <div class="product-detail-heading">
+                        <span class="product-detail-eyebrow">Chi tiết Tài khoản</span>
+                        <h1>@Model.ProductName</h1>
+                        <p>@productDescription</p>
+                    </div>
+
+                    <div class="product-detail-price-row">
+                        <div>
+                            <div class="product-detail-label">Gia ban</div>
+                            <div class="product-detail-price">@Model.Price.ToString("N0") đ</div>
+                        </div>
+
+                        <div class="product-detail-stock">
+                            <i class="fas fa-check-circle"></i>
+                            <span>@(Model.IsSold ? "Đã bán / Hết hàng" : "Sẵn sàng giao dịch")</span>
+                        </div>
+                    </div>
+
+                    <div class="product-detail-purchase">
+                        <input type="hidden" name="quantity" form="buy-now-detail-@Model.Id" value="1">
+
+                        @if(Model.IsSold) {
+                            <div class="alert alert-warning text-center">Tài khoản này đã có người mua.</div>
+                        } else {
+                            <div class="product-detail-actions">
+                                <button class="btn btn-lg btn-add-cart product-detail-action product-action product-action-primary"
+                                        data-productid="@Model.Id">
+                                    <i class="fas fa-shopping-cart mr-2"></i>
+                                    Them vao gio
+                                </button>
+
+                                <form id="buy-now-detail-@Model.Id"
+                                      asp-controller="Checkout"
+                                      asp-action="BuyNow"
+                                      method="get"
+                                      class="m-0">
+                                    <input type="hidden" name="productId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-lg w-100 product-detail-action product-action product-action-accent">
+                                        <i class="fas fa-credit-card mr-2"></i>
+                                        Thanh toan ngay
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       class="product-detail-backlink">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Quay lại danh sách Nick
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/Products/Products.js" asp-append-version="true"></script>
+}

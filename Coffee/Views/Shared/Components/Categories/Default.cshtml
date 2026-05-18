@@ -1,0 +1,72 @@
+@model IEnumerable<Coffee.DTO.CategoryDTO>
+@using System
+@using System.Linq
+@{
+    ViewData["Title"] = "Default";
+    var selectedCategory = ViewContext.HttpContext.Request.Query["loai"].ToString();
+}
+
+<div class="category-wrapper">
+    <div class="category-header">
+        <div>
+            <span class="category-kicker" style="color:#ff0055;">DANH MỤC GAME</span>
+            <h4 class="category-title">Loại Tài Khoản</h4>
+            <p class="category-intro">Chọn nhanh loại tài khoản để tìm được acc vừa ý với bạn nhất.</p>
+        </div>
+        <span class="category-badge">@Model.Count()</span>
+    </div>
+
+    <div class="category-summary">
+        <span><i class="fas fa-layer-group mr-2"></i>@Model.Count() danh mục acc</span>
+        <span><i class="fas fa-fire mr-2"></i>Acc VIP được ưu tiên hiển thị</span>
+    </div>
+
+    <a asp-controller="Products"
+       asp-action="Index"
+       class="category-link category-link-all @(string.IsNullOrWhiteSpace(selectedCategory) ? "is-active" : null)">
+        <span class="category-icon-shell">
+            <i class="fas fa-th-large"></i>
+        </span>
+
+        <span class="category-copy">
+            <span class="name">Tất cả Account</span>
+            <small>Xem toàn bộ tài khoản có trong shop</small>
+        </span>
+
+        <span class="arrow">
+            <i class="fas fa-chevron-right"></i>
+        </span>
+    </a>
+
+    <div class="category-list-shell">
+        <ul class="category-list">
+            @foreach (var c in Model)
+            {
+                var isActive = string.Equals(selectedCategory, c.Id.ToString(), StringComparison.OrdinalIgnoreCase);
+                var description = string.IsNullOrWhiteSpace(c.Description)
+                    ? "Danh mục được tìm kiếm nhiều nhất"
+                    : c.Description;
+
+                <li class="category-item">
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-loai="@c.Id"
+                       class="category-link @(isActive ? "is-active" : null)">
+                        <span class="category-icon-shell">
+                            <i class="fas fa-gamepad"></i>
+                        </span>
+
+                        <span class="category-copy">
+                            <span class="name">@c.Name</span>
+                            <small>@description</small>
+                        </span>
+
+                        <span class="arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

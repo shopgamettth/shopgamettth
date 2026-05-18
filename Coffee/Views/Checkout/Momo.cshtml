@@ -1,0 +1,147 @@
+@model Coffee.ViewModel.MomoCheckoutViewModel
+@{
+    Layout = "_ProductsCoffee";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Checkout/checkout.css" />
+}
+
+<div class="checkout-page container py-4 py-lg-5">
+    @if (!Model.IsBusinessReady)
+    {
+        <div class="alert alert-warning mb-4">
+            MoMo Business chua duoc dien du thong tin merchant, nen trang nay dang dung luong QR chuyen khoan du phong cua shop.
+        </div>
+    }
+
+    <div class="momo-page-header">
+        <div>
+            <div class="checkout-eyebrow">Thanh toan MoMo</div>
+            <h3 class="mb-2">Don #@Model.OrderId dang o trang thai chua thanh toan</h3>
+            <p class="text-muted mb-0">
+                Chuyen dung so tien ben duoi qua MoMo cua shop. Sau do bam nut xac nhan de he thong cap nhat don sang da thanh toan.
+            </p>
+        </div>
+
+        <a asp-controller="Orders" asp-action="Details" asp-route-id="@Model.OrderId" class="btn btn-outline-dark btn-sm">
+            Xem chi tiet don
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <section class="momo-qr-card">
+                <div class="momo-qr-card-header">
+                    <div>
+                        <h5 class="mb-1">Quet QR hoac chuyen bang so dien thoai</h5>
+                        <p class="text-muted mb-0">
+                            Voi QR MoMo ca nhan, nguoi chuyen van can kiem tra lai so tien truoc khi xac nhan.
+                        </p>
+                    </div>
+
+                    <span class="checkout-chip">@Model.TotalAmount.ToString("N0") đ</span>
+                </div>
+
+                @if (Model.HasQrImage)
+                {
+                    <div class="momo-qr-image-wrap">
+                        <img src="@Model.QrImagePath" alt="QR MoMo" class="momo-qr-image" />
+                    </div>
+                }
+                else
+                {
+                    <div class="momo-qr-fallback">
+                        <div class="momo-qr-fallback-icon">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <h6 class="mb-2">Chua gan anh QR MoMo vao project</h6>
+                        <div class="text-muted">
+                            Khach van co the chuyen tien bang so MoMo ben duoi. Neu ban them anh QR vao
+                            <strong>@Model.QrImagePath</strong> thi trang nay se hien QR ngay.
+                        </div>
+                    </div>
+                }
+
+                <div class="momo-transfer-grid">
+                    <div class="momo-transfer-item">
+                        <span>Chu tai khoan</span>
+                        <strong>@Model.DisplayName</strong>
+                    </div>
+
+                    <div class="momo-transfer-item">
+                        <span>So MoMo</span>
+                        <strong>@Model.PhoneNumber</strong>
+                        <button type="button" class="btn btn-outline-dark btn-sm mt-2" data-copy-value="@Model.PhoneNumber">Copy so</button>
+                    </div>
+
+                    <div class="momo-transfer-item">
+                        <span>So tien can chuyen</span>
+                        <strong>@Model.TotalAmount.ToString("N0") đ</strong>
+                        <button type="button" class="btn btn-outline-dark btn-sm mt-2" data-copy-value="@Model.TotalAmount.ToString("0")">Copy so tien</button>
+                    </div>
+
+                    <div class="momo-transfer-item">
+                        <span>Noi dung chuyen khoan</span>
+                        <strong>@Model.PaymentReference</strong>
+                        <button type="button" class="btn btn-outline-dark btn-sm mt-2" data-copy-value="@Model.PaymentReference">Copy noi dung</button>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.ReceiveLink))
+                {
+                    <a href="@Model.ReceiveLink" target="_blank" rel="noopener noreferrer" class="btn btn-danger mt-3">
+                        Mo link nhan tien MoMo
+                    </a>
+                }
+            </section>
+        </div>
+
+        <div class="col-lg-5">
+            <aside class="checkout-summary-card momo-side-card">
+                <h5 class="mb-3">Huong dan thanh toan</h5>
+
+                <div class="momo-step-list">
+                    <div class="momo-step-item">
+                        <span>1</span>
+                        <div>Quet QR MoMo cua shop hoac chuyen den so <strong>@Model.PhoneNumber</strong>.</div>
+                    </div>
+
+                    <div class="momo-step-item">
+                        <span>2</span>
+                        <div>Nhap dung so tien <strong>@Model.TotalAmount.ToString("N0") đ</strong>.</div>
+                    </div>
+
+                    <div class="momo-step-item">
+                        <span>3</span>
+                        <div>Ghi noi dung <strong>@Model.PaymentReference</strong> de shop doi soat nhanh hon.</div>
+                    </div>
+
+                    <div class="momo-step-item">
+                        <span>4</span>
+                        <div>Sau khi chuyen xong, bam xac nhan ben duoi de don chuyen sang trang thai da thanh toan.</div>
+                    </div>
+                </div>
+
+                <div class="checkout-payment-note p-3 mb-3 mt-3">
+                    <div class="fw-bold text-dark mb-2">Trang thai hien tai</div>
+                    <div class="small text-muted mb-1">Don hang: @Model.OrderStatus</div>
+                    <div class="small text-muted">Thanh toan: @Model.PaymentStatus</div>
+                </div>
+
+                <form asp-action="ConfirmMomo" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.OrderId" />
+
+                    <button type="submit" class="btn btn-danger w-100">
+                        Toi da thanh toan qua MoMo
+                    </button>
+                </form>
+            </aside>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/Checkout/checkout.js" asp-append-version="true"></script>
+}

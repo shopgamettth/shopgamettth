@@ -1,0 +1,227 @@
+@model Coffee.Models.Product
+
+@{
+    ViewData["Title"] = "Cap nhat product";
+    Layout = "_ProductsCoffee";
+
+    var imageUrl = string.IsNullOrWhiteSpace(Model.ImageUrl) ? "/img/default.png" : Model.ImageUrl;
+    var productName = string.IsNullOrWhiteSpace(Model.ProductName) ? "San pham chua dat ten" : Model.ProductName.Trim();
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Admin/admin-category.css" />
+    <link rel="stylesheet" href="~/css/Admin/admin-product.css" />
+}
+
+<div class="admin-product-shell container py-4 py-lg-5">
+    <section class="admin-product-hero admin-product-hero-compact">
+        <div>
+            <span class="admin-product-eyebrow">Edit product</span>
+            <h1>Cap nhat san pham</h1>
+            <p>Chinh thong tin, doi anh, doi gia hoac cap nhat category de product hien thi dep va chinh xac hon tren toan he thong.</p>
+        </div>
+
+        <div class="admin-product-hero-actions">
+            <a asp-controller="Admin" asp-action="Index" class="admin-ghost-button">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a asp-action="Index" class="admin-secondary-button">
+                <i class="fas fa-list"></i>
+                <span>Ve danh sach</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="admin-product-form-layout">
+        <article class="admin-product-form-card">
+            <div class="admin-product-form-head">
+                <div>
+                    <span class="admin-product-eyebrow">Product update</span>
+                    <h2>Thong tin can chinh sua</h2>
+                    <p>Ban co the sua ten, gia, mo ta va thay anh moi. Anh xem truoc se cap nhat ngay de ban doi chieu nhanh.</p>
+                </div>
+            </div>
+
+            <form asp-action="Edit" enctype="multipart/form-data" class="admin-product-form">
+                <input type="hidden" asp-for="ProductId" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger admin-product-validation"></div>
+
+                <div class="admin-product-form-grid">
+                    <div class="admin-product-field">
+                        <label asp-for="ProductName" class="form-label">Ten san pham</label>
+                        <input asp-for="ProductName" class="form-control" placeholder="Ten san pham" />
+                        <span asp-validation-for="ProductName" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-product-field">
+                        <label asp-for="GameUsername" class="form-label">Tai khoan dang nhap Game</label>
+                        <input asp-for="GameUsername" class="form-control" placeholder="Tai khoan game..." />
+                        <span asp-validation-for="GameUsername" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-product-field">
+                        <label asp-for="GamePassword" class="form-label">Mat khau dang nhap Game</label>
+                        <input asp-for="GamePassword" class="form-control" placeholder="Mat khau game..." />
+                        <span asp-validation-for="GamePassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-product-field">
+                        <label asp-for="Price" class="form-label">Gia ban</label>
+                        <input asp-for="Price"
+                               class="form-control"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               placeholder="45000" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-product-field">
+                        <label asp-for="CategoryId" class="form-label">Category</label>
+                        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
+                            <option value="">Chon category cho san pham</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-product-field admin-product-field-wide">
+                        <label asp-for="Description" class="form-label">Mo ta ngan</label>
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="Cap nhat mui vi, diem nhan va ly do khach nen chon san pham nay."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="admin-product-field admin-product-field-wide">
+                        <label class="form-label">Thay anh moi</label>
+                        <div class="admin-product-upload admin-product-upload-static">
+                            <input type="file" name="file" id="fileInput" class="d-none" accept="image/*" />
+                            <button type="button" id="uploadTrigger" class="admin-secondary-button admin-product-upload-button">
+                                <i class="fas fa-image"></i>
+                                <span>Chon anh moi</span>
+                            </button>
+                            <p class="mb-1">Neu khong chon anh khac, he thong se giu nguyen hinh hien tai.</p>
+                            <small id="fileHint">Dang dung anh hien tai.</small>
+                        </div>
+                    </div>
+
+                    <div class="admin-product-field admin-product-field-wide mt-3">
+                        <label class="form-label">Thêm ảnh phụ mới</label>
+                        <input type="file" name="extraFiles" class="form-control" multiple accept="image/*" />
+                        <small class="text-muted">Chọn ảnh mới sẽ cập nhật thêm vào danh sách ảnh phụ. Ảnh phụ giúp khách xem chi tiết hơn.</small>
+                    </div>
+                </div>
+
+                <div class="admin-product-form-actions">
+                    <a asp-action="Index" class="admin-secondary-button">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Quay lai</span>
+                    </a>
+                    <button type="submit" class="admin-primary-button">
+                        <i class="fas fa-save"></i>
+                        <span>Luu thay doi</span>
+                    </button>
+                </div>
+            </form>
+        </article>
+
+        <aside class="admin-product-preview-card">
+            <div class="admin-product-preview-media">
+                <img id="previewImage" src="@imageUrl" alt="@productName" />
+            </div>
+            <div id="extraFilesPreview" class="d-flex p-3" style="gap: 10px; overflow-x: auto;"></div>
+
+            <div class="admin-product-preview-body">
+                <span class="admin-product-eyebrow">Current product</span>
+                <strong>@productName</strong>
+                <p>Khung nay hien anh hien tai cua product. Khi ban doi file moi, preview se thay doi ngay de de so sanh.</p>
+            </div>
+
+            <div class="admin-product-side-list">
+                <div class="admin-product-side-item">
+                    <strong>ID san pham</strong>
+                    <p>#@Model.ProductId</p>
+                </div>
+                <div class="admin-product-side-item">
+                    <strong>Gia hien tai</strong>
+                    <p>@Model.Price.ToString("N0") đ</p>
+                </div>
+                <div class="admin-product-side-item">
+                    <strong>Category hien tai</strong>
+                    <p>@(ViewBag.CategoryName ?? "Co the cap nhat trong o chon category")</p>
+                </div>
+            </div>
+        </aside>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (function () {
+            const fileInput = document.getElementById("fileInput");
+            const uploadTrigger = document.getElementById("uploadTrigger");
+            const preview = document.getElementById("previewImage");
+            const fileHint = document.getElementById("fileHint");
+            const priceInput = document.querySelector("input[name='Price']");
+
+            if (uploadTrigger && fileInput) {
+                uploadTrigger.addEventListener("click", () => fileInput.click());
+            }
+
+            if (fileInput && preview && fileHint) {
+                fileInput.addEventListener("change", function (event) {
+                    const file = event.target.files[0];
+
+                    if (!file) {
+                        return;
+                    }
+
+                    if (!file.type.startsWith("image/")) {
+                        alert("Chi duoc chon file anh.");
+                        fileInput.value = "";
+                        fileHint.textContent = "Dang dung anh hien tai.";
+                        return;
+                    }
+
+                    preview.src = URL.createObjectURL(file);
+                    fileHint.textContent = file.name;
+                });
+            }
+
+            const extraFilesInput = document.querySelector("input[name='extraFiles']");
+            const extraFilesPreview = document.getElementById("extraFilesPreview");
+
+            if (extraFilesInput && extraFilesPreview) {
+                extraFilesInput.addEventListener("change", function () {
+                    extraFilesPreview.innerHTML = "";
+                    const files = this.files;
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        if (file.type.startsWith("image/")) {
+                            const img = document.createElement("img");
+                            img.src = URL.createObjectURL(file);
+                            img.style.width = "60px";
+                            img.style.height = "60px";
+                            img.style.objectFit = "cover";
+                            img.style.borderRadius = "8px";
+                            img.style.border = "1px solid rgba(255,255,255,0.2)";
+                            extraFilesPreview.appendChild(img);
+                        }
+                    }
+                });
+            }
+
+            if (priceInput) {
+                priceInput.addEventListener("input", function () {
+                    if (Number(this.value) < 0) {
+                        this.value = 0;
+                    }
+                });
+            }
+        })();
+    </script>
+}

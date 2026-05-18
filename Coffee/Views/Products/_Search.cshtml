@@ -1,0 +1,15 @@
+<form asp-controller="Products" asp-action="Search" class="coffee-search-form" method="get">
+    <div class="coffee-search-field">
+        <i class="fas fa-search"></i>
+        <input class="form-control"
+               type="search"
+               name="query"
+               value="@ViewBag.Query"
+               placeholder="Tìm tài khoản, rank, tướng..."
+               aria-label="Tim san pham">
+    </div>
+
+    <button class="coffee-search-button" type="submit">
+        Tim ngay
+    </button>
+</form>

@@ -1,0 +1,78 @@
+@model IEnumerable<Coffee.Models.User>
+@{
+    Layout = "_ProductsCoffee";
+    ViewData["Title"] = "Quản lý Người Dùng & Nạp Tiền";
+}
+<div class="container py-4 py-lg-5" style="margin-top: 100px;">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h2 class="h3 mb-0 text-white">Quản lý Người Dùng</h2>
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-light">Quay lại Dashboard</a>
+    </div>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    <div class="card bg-dark text-white shadow mb-4">
+        <div class="card-header bg-dark border-bottom border-secondary d-flex align-items-center">
+            <h5 class="mb-0 mr-3">Danh sách</h5>
+            <input type="text" id="emailSearch" class="form-control bg-dark text-white border-secondary" placeholder="Tìm kiếm theo Email..." style="max-width: 300px;" onkeyup="filterUsers()" />
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive" style="max-height: 380px; overflow-y: auto;">
+                <table class="table table-dark table-bordered table-hover text-white m-0" id="usersTable">
+                    <thead style="position: sticky; top: 0; z-index: 1; background-color: #343a40;">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên tài khoản</th>
+                            <th>Email</th>
+                            <th>Số Dư (VNĐ)</th>
+                            <th>Ngày tham gia</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var u in Model)
+                        {
+                            <tr class="user-row">
+                                <td>@u.UserId</td>
+                                <td>@u.UserName</td>
+                                <td class="user-email">@u.Email</td>
+                                <td class="text-warning fw-bold">@((u.Balance ?? 0).ToString("N0"))</td>
+                                <td>@u.CreatedAt?.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <form asp-action="AddBalance" method="post" class="d-flex">
+                                        <input type="hidden" name="userId" value="@u.UserId" />
+                                        <input type="number" name="amount" class="form-control mr-2 bg-dark text-white border-secondary" placeholder="Số tiền..." required min="1000" style="width: 150px;" />
+                                        <button type="submit" class="btn btn-success btn-sm whitespace-nowrap">Cộng Tiền</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function filterUsers() {
+            const input = document.getElementById('emailSearch');
+            const filter = input.value.toLowerCase();
+            const rows = document.getElementsByClassName('user-row');
+
+            for (let i = 0; i < rows.length; i++) {
+                const emailCell = rows[i].querySelector('.user-email');
+                if (emailCell) {
+                    const email = emailCell.textContent || emailCell.innerText;
+                    if (email.toLowerCase().indexOf(filter) > -1) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+}

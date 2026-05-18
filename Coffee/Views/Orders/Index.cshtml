@@ -1,0 +1,116 @@
+@model Coffee.ViewModel.OrderHistoryViewModel
+@using Coffee.Helper
+@using Coffee.Util
+@using System.Linq
+@{
+    Layout = "_ProductsCoffee";
+
+    var totalOrders = Model.Orders.Count;
+    var totalAmount = Model.Orders.Sum(x => x.TotalAmount);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Orders/orders.css" />
+}
+
+<div class="orders-page container py-4 py-lg-5">
+    @if (TempData["OrderSuccess"] != null)
+    {
+        <div class="alert alert-success mb-4">@TempData["OrderSuccess"]</div>
+    }
+
+    @if (TempData["OrderError"] != null)
+    {
+        <div class="alert alert-danger mb-4">@TempData["OrderError"]</div>
+    }
+
+    <div class="orders-hero">
+        <div>
+            <div class="orders-eyebrow">Order center</div>
+            <h3 class="mb-2">Lịch sử đơn hàng của bạn</h3>
+            <p class="text-muted mb-0">Các tài khoản game bạn đã mua thành công sẽ được lưu trữ tại đây.</p>
+        </div>
+
+        <a asp-controller="Products" asp-action="Index" class="btn btn-dark orders-hero-action">
+            <i class="fas fa-gamepad mr-2"></i>
+            Tiếp tục mua nick
+        </a>
+    </div>
+
+    @if (!Model.Orders.Any())
+    {
+        <div class="orders-empty-state">
+            <h5 class="mb-2">Bạn chưa mua tài khoản nào</h5>
+            <div class="text-muted mb-3">Khi mua hàng thành công, lịch sử sẽ hiển thị đầy đủ ngay tại đây.</div>
+            <a asp-controller="Products" asp-action="Index" class="btn btn-dark">Mua ngay</a>
+        </div>
+    }
+    else
+    {
+        <section class="orders-stat-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <article class="orders-stat-card">
+                <span class="orders-stat-label">Tổng đơn mua</span>
+                <strong>@totalOrders</strong>
+                <small>Toàn bộ số lần mua nick của bạn</small>
+            </article>
+            <article class="orders-stat-card">
+                <span class="orders-stat-label">Tổng chi tiêu</span>
+                <strong>@totalAmount.ToString("N0") đ</strong>
+                <small>Số tiền đã nạp và sử dụng</small>
+            </article>
+        </section>
+
+        <section class="orders-segment-grid" style="grid-template-columns: 1fr;">
+            <section class="orders-list-panel">
+                <div class="orders-list-panel-header">
+                    <div>
+                        <h5 class="mb-1">Tất cả đơn hàng</h5>
+                        <p class="text-muted mb-0">Nhấp vào chi tiết để xem tài khoản và mật khẩu.</p>
+                    </div>
+                </div>
+
+                <div class="orders-list-scroll">
+                    <div class="orders-list">
+                        @foreach (var order in Model.Orders)
+                        {
+                            <article class="order-history-card">
+                                <div class="order-history-top">
+                                    <div class="order-history-title">
+                                        <span class="order-chip">Đơn #@order.OrderId</span>
+                                        <span class="order-chip order-chip-soft">@order.TotalItems nick</span>
+                                    </div>
+
+                                    <div class="order-history-total">@order.TotalAmount.ToString("N0") đ</div>
+                                </div>
+
+                                <div class="order-history-grid">
+                                    <div class="order-meta-item">
+                                        <span>Ngày mua</span>
+                                        <strong>@AppTimeHelper.ConvertTo(order.OrderDate, TimeZoneConstants.Vietnam).ToString("dd/MM/yyyy HH:mm")</strong>
+                                    </div>
+
+                                    <div class="order-meta-item">
+                                        <span>Trạng thái</span>
+                                        <strong class="text-success"><i class="fas fa-check-circle"></i> Thành công</strong>
+                                    </div>
+                                </div>
+
+                                <div class="order-history-footer">
+                                    <div class="order-status-cluster">
+                                        <span class="order-status-pill order-status-pill-success">Thanh toán bằng số dư</span>
+                                    </div>
+
+                                    <div class="order-action-group">
+                                        <a asp-controller="Orders" asp-action="Details" asp-route-id="@order.OrderId" class="btn btn-dark btn-sm px-4">
+                                            Xem chi tiết lấy nick
+                                        </a>
+                                    </div>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                </div>
+            </section>
+        </section>
+    }
+</div>

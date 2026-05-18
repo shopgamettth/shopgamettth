@@ -1,0 +1,37 @@
+@{
+    ViewData["Title"] = "Dịch Vụ";
+}
+<div class="container-fluid pt-5">
+    <div class="container">
+        <div class="section-title">
+            <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">Nạp Tiền</h4>
+            <h1 class="display-4">Nạp Thẻ Qua TSR (Thesieure)</h1>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 mx-auto mb-5 text-center">
+                <div class="p-5 bg-dark border rounded">
+                    <h3 class="mb-4 text-white">Chuyển Tiền Vào Tài Khoản TSR</h3>
+                    <p class="text-light">Vui lòng chuyển tiền vào tài khoản TSR bên dưới. Hệ thống sẽ cộng tiền tự động sau 1-3 phút.</p>
+                    
+                    <div class="mt-4 p-3 border rounded text-left bg-light text-dark">
+                        <h5>Thông Tin Nhận Tiền:</h5>
+                        <p class="mb-1"><strong>Tài Khoản TSR:</strong> 0989767704</p>
+                        <p class="mb-1"><strong>Tên Chủ Tài Khoản:</strong> TRINH THE THANH HAI</p>
+                        <p class="mb-0 text-danger"><strong>Nội Dung Chuyển Tiền:</strong> NAPTIEN @(User?.Identity?.Name ?? "USERNAME")</p>
+                    </div>
+
+                    <div class="mt-4">
+                        @if (User?.Identity?.IsAuthenticated == true)
+                        {
+                            <button class="btn btn-primary py-2 px-4" onclick="alert('Tính năng Nạp tự động TSR đang trong quá trình thử nghiệm. Vui lòng liên hệ Admin nếu bị lỗi.')">Đã Chuyển Tiền</button>
+                        }
+                        else
+                        {
+                            <a href="/Auth/Login" class="btn btn-secondary py-2 px-4">Vui Lòng Đăng Nhập Để Nạp</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

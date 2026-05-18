@@ -1,0 +1,129 @@
+@model Coffee.Models.Product
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Xoa product";
+    Layout = "_ProductsCoffee";
+
+    var imageUrl = string.IsNullOrWhiteSpace(Model.ImageUrl) ? "/img/default.png" : Model.ImageUrl;
+    var productName = string.IsNullOrWhiteSpace(Model.ProductName) ? "San pham chua dat ten" : Model.ProductName.Trim();
+    var description = string.IsNullOrWhiteSpace(Model.Description) ? "Chua co mo ta cho san pham nay." : Model.Description.Trim();
+    var categoryName = Model.Category?.CategoryName ?? "Chua gan category";
+    var cartCount = Model.Carts?.Count ?? 0;
+    var totalSold = Model.OrderDetails?.Sum(x => x.Quantity ?? 0) ?? 0;
+    var hasCartReferences = cartCount > 0;
+    var hasOrderHistory = totalSold > 0;
+    var canDelete = !hasCartReferences && !hasOrderHistory;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Admin/admin-category.css" />
+    <link rel="stylesheet" href="~/css/Admin/admin-product.css" />
+}
+
+<div class="admin-product-shell container py-4 py-lg-5">
+    <section class="admin-product-hero admin-product-hero-compact">
+        <div>
+            <span class="admin-product-eyebrow">Delete product</span>
+            <h1>Xac nhan xoa san pham</h1>
+            <p>Trang nay giup ban kiem tra nhanh xem product co dang lien quan toi gio hang hay lich su don hang truoc khi xoa han.</p>
+        </div>
+
+        <div class="admin-product-hero-actions">
+            <a asp-action="Index" class="admin-secondary-button">
+                <i class="fas fa-list"></i>
+                <span>Ve danh sach</span>
+            </a>
+            <a asp-action="Details" asp-route-id="@Model.ProductId" class="admin-ghost-button">
+                <i class="fas fa-eye"></i>
+                <span>Xem chi tiet</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="admin-product-detail-grid">
+        <article class="admin-product-detail-card">
+            <div class="admin-product-detail-media">
+                <img src="@imageUrl" alt="@productName" />
+            </div>
+
+            <div class="admin-product-detail-body">
+                <span class="admin-product-eyebrow">Product summary</span>
+                <h2>@productName</h2>
+
+                <div class="admin-product-detail-pills">
+                    <span class="admin-product-badge is-dark">@Model.Price.ToString("N0") đ</span>
+                    <span class="admin-product-badge @(Model.CategoryId.HasValue ? null : "is-soft")">@categoryName</span>
+                    <span class="admin-product-badge @(hasOrderHistory ? null : "is-soft")">@totalSold da ban</span>
+                    <span class="admin-product-badge @(hasCartReferences ? null : "is-soft")">@cartCount trong gio</span>
+                </div>
+
+                <dl class="admin-product-detail-list">
+                    <div class="admin-product-info-row">
+                        <dt>Mo ta</dt>
+                        <dd>@description</dd>
+                    </div>
+                    <div class="admin-product-info-row">
+                        <dt>ID san pham</dt>
+                        <dd>#@Model.ProductId</dd>
+                    </div>
+                    <div class="admin-product-info-row">
+                        <dt>Canh bao</dt>
+                        <dd>Chi nen xoa khi san pham khong con nam trong gio hang va chua tung xuat hien trong don da tao.</dd>
+                    </div>
+                </dl>
+            </div>
+        </article>
+
+        <aside class="admin-product-warning-card @(canDelete ? "is-safe" : null)">
+            <div>
+                <span class="admin-product-eyebrow">Delete check</span>
+                <h3>@(canDelete ? "San sang de xoa" : "Tam thoi chua the xoa")</h3>
+                <p>@(canDelete
+                    ? "San pham hien khong bi rang buoc boi gio hang hoac lich su don, ban co the xoa an toan."
+                    : "He thong dang giu product nay de bao toan du lieu don hang hoac gio hang cua khach.")</p>
+            </div>
+
+            <div class="admin-product-side-list">
+                <div class="admin-product-side-item">
+                    <strong>Trang thai gio hang</strong>
+                    <p>@(hasCartReferences ? $"Dang co {cartCount} gio hang chua san pham nay." : "Khong co gio hang nao tham chieu toi san pham nay.")</p>
+                </div>
+                <div class="admin-product-side-item">
+                    <strong>Trang thai lich su don</strong>
+                    <p>@(hasOrderHistory ? $"San pham da duoc dat tong cong {totalSold} lan." : "San pham chua xuat hien trong lich su don hang.")</p>
+                </div>
+            </div>
+
+            @if (canDelete)
+            {
+                <form asp-action="Delete" method="post" class="admin-product-delete-form">
+                    <input type="hidden" asp-for="ProductId" />
+                    <div class="admin-category-inline-actions">
+                        <a asp-action="Index" class="admin-secondary-button">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Quay lai</span>
+                        </a>
+                        <button type="submit" class="admin-danger-button">
+                            <i class="fas fa-trash-alt"></i>
+                            <span>Xoa san pham</span>
+                        </button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="admin-category-inline-actions">
+                    <a asp-action="Index" class="admin-secondary-button">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Quay lai</span>
+                    </a>
+                    <button type="button" class="admin-danger-button disabled" disabled>
+                        <i class="fas fa-lock"></i>
+                        <span>Chua the xoa</span>
+                    </button>
+                </div>
+            }
+        </aside>
+    </section>
+</div>

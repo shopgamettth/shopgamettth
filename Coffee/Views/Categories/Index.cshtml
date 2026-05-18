@@ -1,0 +1,222 @@
+@model IEnumerable<Coffee.Models.Category>
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Quan ly category";
+    Layout = "_ProductsCoffee";
+
+    var categories = Model.ToList();
+    var totalCategories = categories.Count;
+    var totalProducts = categories.Sum(x => x.Products?.Count ?? 0);
+    var describedCategories = categories.Count(x => !string.IsNullOrWhiteSpace(x.Description));
+    var topCategory = categories
+        .OrderByDescending(x => x.Products?.Count ?? 0)
+        .FirstOrDefault();
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Admin/admin-category.css" />
+}
+
+<div class="admin-category-shell container py-4 py-lg-5">
+    <section class="admin-category-hero">
+        <div>
+            <span class="admin-category-eyebrow">Category management</span>
+            <h1>Quan ly danh muc san pham</h1>
+            <p>Gom toan bo category ve mot khu quan tri gon gang de ban tao moi, cap nhat va theo doi so san pham trong tung nhom de hon.</p>
+        </div>
+
+        <div class="admin-category-hero-actions">
+            <a asp-controller="Admin" asp-action="Index" class="admin-secondary-button">
+                <i class="fas fa-arrow-left"></i>
+                <span>Ve dashboard</span>
+            </a>
+            <a asp-action="Create" class="admin-primary-button">
+                <i class="fas fa-plus"></i>
+                <span>Tao category moi</span>
+            </a>
+        </div>
+    </section>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success admin-category-alert">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger admin-category-alert">
+            @TempData["Error"]
+        </div>
+    }
+
+    <section class="admin-category-stat-grid">
+        <article class="admin-category-stat-card">
+            <span class="admin-category-stat-label">Tong category</span>
+            <strong>@totalCategories</strong>
+            <small>Dang duoc quan ly trong cua hang</small>
+        </article>
+
+        <article class="admin-category-stat-card">
+            <span class="admin-category-stat-label">Tong san pham gan category</span>
+            <strong>@totalProducts</strong>
+            <small>So san pham dang nam trong cac nhom hien tai</small>
+        </article>
+
+        <article class="admin-category-stat-card">
+            <span class="admin-category-stat-label">Category co mo ta</span>
+            <strong>@describedCategories</strong>
+            <small>Giup admin phan biet nhanh y nghia tung nhom</small>
+        </article>
+
+        <article class="admin-category-stat-card">
+            <span class="admin-category-stat-label">Nhieu san pham nhat</span>
+            <strong>@(topCategory?.CategoryName ?? "Chua co")</strong>
+            <small>@((topCategory?.Products?.Count ?? 0).ToString()) san pham trong category noi bat</small>
+        </article>
+    </section>
+
+    <section class="admin-category-panel">
+        <div class="admin-category-panel-header">
+            <div>
+                <h2 class="mb-1">Danh sach category</h2>
+                <p>Tim nhanh theo ten hoac mo ta, sau do di vao sua, xem chi tiet hay xoa category trong mot bang duy nhat.</p>
+            </div>
+
+            <label class="admin-category-search mb-0">
+                <i class="fas fa-search"></i>
+                <input id="categorySearchInput"
+                       type="text"
+                       class="form-control"
+                       placeholder="Tim category theo ten hoac mo ta" />
+            </label>
+        </div>
+
+        @if (categories.Any())
+        {
+            <div class="admin-category-table-wrap">
+                <table class="table admin-category-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Mo ta</th>
+                            <th>So san pham</th>
+                            <th class="text-right">Hanh dong</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoryTableBody">
+                        @foreach (var item in categories)
+                        {
+                            var productCount = item.Products?.Count ?? 0;
+                            var initial = string.IsNullOrWhiteSpace(item.CategoryName)
+                                ? "C"
+                                : item.CategoryName.Trim()[0].ToString().ToUpperInvariant();
+                            var description = string.IsNullOrWhiteSpace(item.Description)
+                                ? "Chua co mo ta cho category nay."
+                                : item.Description.Trim();
+
+                            <tr data-search="@($"{item.CategoryName} {description}".ToLowerInvariant())">
+                                <td>
+                                    <div class="admin-category-name">
+                                        <span class="admin-category-initial">@initial</span>
+                                        <div>
+                                            <strong>@item.CategoryName</strong>
+                                            <small>ID #@item.CategoryId</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="admin-category-description @(string.IsNullOrWhiteSpace(item.Description) ? "is-empty" : null)">
+                                        @description
+                                    </p>
+                                </td>
+                                <td>
+                                    <span class="admin-category-count-badge @(productCount == 0 ? "is-empty" : null)">
+                                        @productCount san pham
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="admin-category-actions">
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.CategoryId"
+                                           class="admin-category-action admin-category-action-edit"
+                                           title="Chinh sua">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.CategoryId"
+                                           class="admin-category-action admin-category-action-detail"
+                                           title="Xem chi tiet">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.CategoryId"
+                                           class="admin-category-action admin-category-action-delete"
+                                           title="Xoa category">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="categorySearchEmpty" class="admin-category-empty-state d-none mt-3">
+                <i class="fas fa-search-minus"></i>
+                <h3 class="h5 mb-2">Khong tim thay category phu hop</h3>
+                <p>Thu doi tu khoa tim kiem hoac tao category moi neu nhom san pham nay chua ton tai.</p>
+            </div>
+        }
+        else
+        {
+            <div class="admin-category-empty-state">
+                <i class="fas fa-folder-open"></i>
+                <h3 class="h5 mb-2">Chua co category nao</h3>
+                <p class="mb-3">Bat dau bang cach tao category dau tien de nhom san pham duoc sap xep dep va ro rang hon.</p>
+                <a asp-action="Create" class="admin-primary-button">
+                    <i class="fas fa-plus"></i>
+                    <span>Tao category dau tien</span>
+                </a>
+            </div>
+        }
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const searchInput = document.getElementById("categorySearchInput");
+            const tableBody = document.getElementById("categoryTableBody");
+            const emptyState = document.getElementById("categorySearchEmpty");
+
+            if (!searchInput || !tableBody || !emptyState) {
+                return;
+            }
+
+            const rows = Array.from(tableBody.querySelectorAll("tr"));
+
+            function filterRows() {
+                const keyword = searchInput.value.trim().toLowerCase();
+                let visibleRows = 0;
+
+                rows.forEach((row) => {
+                    const haystack = row.dataset.search || "";
+                    const isVisible = keyword === "" || haystack.includes(keyword);
+                    row.style.display = isVisible ? "" : "none";
+
+                    if (isVisible) {
+                        visibleRows += 1;
+                    }
+                });
+
+                emptyState.classList.toggle("d-none", visibleRows > 0);
+            }
+
+            searchInput.addEventListener("input", filterRows);
+        })();
+    </script>
+}

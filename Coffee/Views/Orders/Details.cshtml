@@ -1,0 +1,142 @@
+@model Coffee.ViewModel.OrderDetailViewModel
+@using Coffee.Helper
+@using Coffee.Util;
+
+@{
+    Layout = "_ProductsCoffee";
+    var totalQuantity = Model.Items.Sum(x => x.Quantity);
+    var transactionId = string.IsNullOrWhiteSpace(Model.TransactionId) ? "Dang cap nhat" : Model.TransactionId;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Orders/orders.css" />
+}
+
+<div class="orders-page container py-4 py-lg-5">
+    @if (TempData["OrderSuccess"] != null)
+    {
+        <div class="alert alert-success mb-4">@TempData["OrderSuccess"]</div>
+    }
+
+    @if (TempData["OrderError"] != null)
+    {
+        <div class="alert alert-danger mb-4">@TempData["OrderError"]</div>
+    }
+
+    @if (TempData["MomoSuccess"] != null)
+    {
+        <div class="alert alert-success mb-4">@TempData["MomoSuccess"]</div>
+    }
+
+    <div class="orders-hero">
+        <div>
+            <div class="orders-eyebrow">Chi tiet don hang</div>
+            <h3 class="mb-2">Don #@Model.OrderId</h3>
+            <p class="text-muted mb-0">Theo doi giao hang, thanh toan va danh sach mon trong mot bo cuc gon hon.</p>
+        </div>
+
+        <a asp-controller="Orders" asp-action="Index" class="btn btn-outline-dark orders-hero-action">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Quay lai lich su don
+        </a>
+    </div>
+
+    <div class="row g-4 orders-detail-layout">
+        <div class="col-lg-4">
+            <aside class="order-summary-card">
+                <div class="order-summary-header">
+                    <span class="order-chip">Don #@Model.OrderId</span>
+                    <span class="order-chip order-chip-soft">@totalQuantity mon</span>
+                </div>
+
+                <h5 class="mb-3">Thong tin giao hang</h5>
+
+                <div class="order-summary-list">
+                    <div class="order-summary-item">
+                        <span>Nguoi nhan</span>
+                        <strong>@Model.ReceiverName</strong>
+                    </div>
+
+                    <div class="order-summary-item">
+                        <span>So dien thoai</span>
+                        <strong>@Model.ReceiverPhone</strong>
+                    </div>
+
+                    <div class="order-summary-item">
+                        <span>Dia chi</span>
+                        <strong>@Model.ShippingAddress</strong>
+                    </div>
+
+                    <div class="order-summary-item">
+                        <span>Ngay dat</span>
+                        <strong>@AppTimeHelper.ConvertTo(Model.OrderDate, TimeZoneConstants.Vietnam).ToString("dd/MM/yyyy HH:mm")</strong>
+                    </div>
+
+                    <div class="order-summary-item">
+                        <span>Trang thai don</span>
+                        <strong>@Model.Status</strong>
+                    </div>
+
+                    <div class="order-summary-item">
+                        <span>Thanh toan</span>
+                        <strong>@Model.PaymentStatus</strong>
+                    </div>
+
+                    <div class="order-summary-item">
+                        <span>Phuong thuc</span>
+                        <strong>@Model.PaymentMethod</strong>
+                    </div>
+
+                    <div class="order-summary-item">
+                        <span>Ma giao dich</span>
+                        <strong>@transactionId</strong>
+                    </div>
+                </div>
+
+                <div class="order-total-card">
+                    <span>Tong tien</span>
+                    <strong>@Model.TotalAmount.ToString("N0") đ</strong>
+                </div>
+
+                <div class="small text-muted mt-3">
+                    <text>Tài khoản game đã được tự động giao đến bạn ngay sau khi thanh toán thành công. Cảm ơn bạn đã tin tưởng ủng hộ shop!</text>
+                </div>
+            </aside>
+        </div>
+
+        <div class="col-lg-8">
+            <section class="order-items-card">
+                <div class="order-items-header">
+                    <div>
+                        <h5 class="mb-1">San pham trong don</h5>
+                        <p class="mb-0 text-muted">Danh sach duoc gioi han chieu cao de don nhieu mon van gon mat.</p>
+                    </div>
+
+                    <span class="order-status-pill @(Model.IsCancelled ? "order-status-pill-danger" : null)">@Model.Status</span>
+                </div>
+
+                <div class="order-items-scroll">
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="order-item-row">
+                            <div class="order-item-main">
+                                <div class="order-item-name">@item.ProductName</div>
+                                <div class="order-item-meta">Don gia: @item.Price.ToString("N0") đ</div>
+                                @if (OrderStatusHelper.IsPaid(Model.PaymentStatus))
+                                {
+                                    <div class="mt-2 p-2 bg-light border rounded">
+                                        <div class="mb-1"><strong>Tài khoản:</strong> <span class="text-primary">@(item.GameUsername ?? "Đang cập nhật...")</span></div>
+                                        <div><strong>Mật khẩu:</strong> <span class="text-danger">@(item.GamePassword ?? "Đang cập nhật...")</span></div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="order-item-qty">x @item.Quantity</div>
+                            <div class="order-item-subtotal">@item.SubTotal.ToString("N0") đ</div>
+                        </div>
+                    }
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

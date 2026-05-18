@@ -1,0 +1,255 @@
+@model IEnumerable<Coffee.Models.Product>
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Quan ly product";
+    Layout = "_ProductsCoffee";
+
+    var products = Model.ToList();
+    var totalProducts = products.Count;
+    var categorizedProducts = products.Count(x => x.CategoryId.HasValue);
+    var uncategorizedProducts = totalProducts - categorizedProducts;
+    var averagePrice = products.Any() ? products.Average(x => x.Price) : 0;
+    var topSellingProduct = products
+        .OrderByDescending(x => x.OrderDetails?.Sum(detail => detail.Quantity ?? 0) ?? 0)
+        .FirstOrDefault();
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Admin/admin-category.css" />
+    <link rel="stylesheet" href="~/css/Admin/admin-product.css" />
+}
+
+<div class="admin-product-shell container py-4 py-lg-5">
+    <section class="admin-product-hero">
+        <div>
+            <span class="admin-product-eyebrow">Product management</span>
+            <h1>Quan ly san pham cua cua hang</h1>
+            <p>Tat ca product duoc dua ve mot khu admin gon dep hon de ban tim, sua, xem chi tiet va kiem soat tinh trang ban hang nhanh hon.</p>
+        </div>
+
+        <div class="admin-product-hero-actions">
+            <a asp-controller="Admin" asp-action="Index" class="admin-secondary-button">
+                <i class="fas fa-arrow-left"></i>
+                <span>Ve dashboard</span>
+            </a>
+            <a asp-action="Create" class="admin-primary-button">
+                <i class="fas fa-plus"></i>
+                <span>Them product moi</span>
+            </a>
+        </div>
+    </section>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success admin-product-alert">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger admin-product-alert">
+            @TempData["Error"]
+        </div>
+    }
+
+    <section class="admin-product-stat-grid">
+        <article class="admin-product-stat-card">
+            <span class="admin-product-stat-label">Tong product</span>
+            <strong>@totalProducts</strong>
+            <small>Dang hien dien trong menu cua hang</small>
+        </article>
+
+        <article class="admin-product-stat-card">
+            <span class="admin-product-stat-label">Da gan category</span>
+            <strong>@categorizedProducts</strong>
+            <small>San pham da duoc sap xep vao nhom ro rang</small>
+        </article>
+
+        <article class="admin-product-stat-card">
+            <span class="admin-product-stat-label">Chua gan category</span>
+            <strong>@uncategorizedProducts</strong>
+            <small>Can bo sung nhom de dashboard dep va de loc hon</small>
+        </article>
+
+        <article class="admin-product-stat-card">
+            <span class="admin-product-stat-label">Gia trung binh</span>
+            <strong>@averagePrice.ToString("N0") đ</strong>
+            <small>Gia chung cua cac mon dang duoc quan ly</small>
+        </article>
+
+        <article class="admin-product-stat-card">
+            <span class="admin-product-stat-label">Ban tot nhat</span>
+            <strong>@(topSellingProduct?.ProductName ?? "Chua co")</strong>
+            <small>@((topSellingProduct?.OrderDetails?.Sum(x => x.Quantity ?? 0) ?? 0).ToString()) mon da duoc dat</small>
+        </article>
+    </section>
+
+    <section class="admin-product-panel">
+        <div class="admin-product-panel-header">
+            <div>
+                <h2 class="mb-1">Danh sach product</h2>
+                <p>Tim nhanh theo ten, category hoac mo ta, sau do thao tac ngay tren tung dong ma khong bi roi mat nhu giao dien cu.</p>
+            </div>
+
+            <label class="admin-product-search mb-0">
+                <i class="fas fa-search"></i>
+                <input id="productSearchInput"
+                       type="text"
+                       class="form-control"
+                       placeholder="Tim product theo ten, mo ta, category" />
+            </label>
+        </div>
+
+        @if (products.Any())
+        {
+            <div class="admin-product-table-wrap">
+                <table class="table admin-product-table">
+                    <thead>
+                        <tr>
+                            <th>San pham</th>
+                            <th>Gia</th>
+                            <th>Mo ta</th>
+                            <th>Category</th>
+                            <th>Hoat dong</th>
+                            <th class="text-right">Hanh dong</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                        @foreach (var item in products)
+                        {
+                            var productName = string.IsNullOrWhiteSpace(item.ProductName) ? "San pham chua dat ten" : item.ProductName.Trim();
+                            var description = string.IsNullOrWhiteSpace(item.Description)
+                                ? "Chua co mo ta cho san pham nay."
+                                : item.Description.Trim();
+                            var imageUrl = string.IsNullOrWhiteSpace(item.ImageUrl) ? "/img/default.png" : item.ImageUrl;
+                            var categoryName = item.Category?.CategoryName ?? "Chua gan category";
+                            var salesCount = item.OrderDetails?.Sum(x => x.Quantity ?? 0) ?? 0;
+                            var cartCount = item.Carts?.Count ?? 0;
+                            var searchValue = $"{productName} {description} {categoryName}".ToLowerInvariant();
+
+                            <tr data-search="@searchValue">
+                                <td>
+                                    <div class="admin-product-name">
+                                        <img src="@imageUrl" alt="@productName" class="admin-product-thumb" />
+                                        <div>
+                                            <strong>@productName @if(item.IsSold) { <span class="badge bg-secondary ml-2" style="font-size:0.7em;">Hết hàng</span> }</strong>
+                                            <small>ID #@item.ProductId</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="admin-product-price">@item.Price.ToString("N0") đ</div>
+                                </td>
+                                <td>
+                                    <p class="admin-product-description @(string.IsNullOrWhiteSpace(item.Description) ? "is-empty" : null)">
+                                        @description
+                                    </p>
+                                </td>
+                                <td>
+                                    <span class="admin-product-badge @(item.CategoryId.HasValue ? null : "is-soft")">
+                                        @categoryName
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="admin-product-metrics">
+                                        <span class="admin-product-metric">
+                                            <i class="fas fa-shopping-bag"></i>
+                                            @salesCount da ban
+                                        </span>
+                                        <span class="admin-product-metric is-soft">
+                                            <i class="fas fa-shopping-cart"></i>
+                                            @cartCount trong gio
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="admin-product-actions">
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.ProductId"
+                                           class="admin-product-action admin-product-action-edit"
+                                           title="Chinh sua">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.ProductId"
+                                           class="admin-product-action admin-product-action-detail"
+                                           title="Xem chi tiet">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.ProductId"
+                                           class="admin-product-action admin-product-action-delete"
+                                           title="Xoa san pham">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                        <form asp-action="ToggleSold" method="post" style="display:inline-block; margin-left: 5px;">
+                                            <input type="hidden" name="id" value="@item.ProductId" />
+                                            <button type="submit" class="admin-product-action @(item.IsSold ? "text-success" : "text-warning")" title="@(item.IsSold ? "Khôi phục tài khoản" : "Đánh dấu hết hàng")" style="border:none; background:none; padding:8px;">
+                                                <i class="fas @(item.IsSold ? "fa-check-circle" : "fa-ban")"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="productSearchEmpty" class="admin-product-empty-state d-none mt-3">
+                <i class="fas fa-search-minus"></i>
+                <h3 class="h5 mb-2">Khong tim thay product phu hop</h3>
+                <p>Thu doi tu khoa tim kiem, hoac tao san pham moi neu mon nay chua co trong he thong.</p>
+            </div>
+        }
+        else
+        {
+            <div class="admin-product-empty-state">
+                <i class="fas fa-mug-hot"></i>
+                <h3 class="h5 mb-2">Chua co product nao</h3>
+                <p class="mb-3">Bat dau bang cach tao san pham dau tien de menu va khu quan tri day dan hon.</p>
+                <a asp-action="Create" class="admin-primary-button">
+                    <i class="fas fa-plus"></i>
+                    <span>Them product dau tien</span>
+                </a>
+            </div>
+        }
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const searchInput = document.getElementById("productSearchInput");
+            const tableBody = document.getElementById("productTableBody");
+            const emptyState = document.getElementById("productSearchEmpty");
+
+            if (!searchInput || !tableBody || !emptyState) {
+                return;
+            }
+
+            const rows = Array.from(tableBody.querySelectorAll("tr"));
+
+            function filterRows() {
+                const keyword = searchInput.value.trim().toLowerCase();
+                let visibleRows = 0;
+
+                rows.forEach((row) => {
+                    const haystack = row.dataset.search || "";
+                    const isVisible = keyword === "" || haystack.includes(keyword);
+                    row.style.display = isVisible ? "" : "none";
+
+                    if (isVisible) {
+                        visibleRows += 1;
+                    }
+                });
+
+                emptyState.classList.toggle("d-none", visibleRows > 0);
+            }
+
+            searchInput.addEventListener("input", filterRows);
+        })();
+    </script>
+}

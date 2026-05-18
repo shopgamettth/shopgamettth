@@ -1,0 +1,329 @@
+@model Coffee.ViewModel.AdminDashboardViewModel
+@using Coffee.Helper
+@using Coffee.Util;
+
+@using System.Text.Json
+@{
+    Layout = "_ProductsCoffee";
+
+    var monthlyLabelsJson = JsonSerializer.Serialize(Model.MonthlyStats.Select(x => x.Label));
+    var monthlyRevenueJson = JsonSerializer.Serialize(Model.MonthlyStats.Select(x => x.Revenue));
+    var monthlyOrdersJson = JsonSerializer.Serialize(Model.MonthlyStats.Select(x => x.OrderCount));
+
+    var categoryLabelsJson = JsonSerializer.Serialize(Model.ProductsByCategory.Select(x => x.Label));
+    var categoryValuesJson = JsonSerializer.Serialize(Model.ProductsByCategory.Select(x => x.Value));
+
+    var statusLabelsJson = JsonSerializer.Serialize(Model.OrderStatusStats.Select(x => x.Label));
+    var statusValuesJson = JsonSerializer.Serialize(Model.OrderStatusStats.Select(x => x.Value));
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Admin/admin-dashboard.css" />
+}
+
+<div class="admin-dashboard container py-4 py-lg-5">
+    <section class="admin-hero">
+        <div>
+            <div class="admin-eyebrow">Dashboard quan tri</div>
+            <h2 class="mb-2">Tong quan hoat dong quan va ban hang</h2>
+            <p class="text-muted mb-0">Theo doi san pham, don hang, doanh thu va cac nhom mon ban chay trong cung mot man hinh.</p>
+        </div>
+
+        <div class="admin-hero-actions">
+            <a asp-controller="AdminProducts" asp-action="Index" class="btn btn-light">
+                <i class="fas fa-gamepad mr-2"></i>
+                Quản lý Account
+            </a>
+            <a asp-controller="Categories" asp-action="Index" class="btn btn-outline-light">
+                <i class="fas fa-folder-open mr-2"></i>
+                Quản lý Danh mục
+            </a>
+            <a asp-controller="AdminUsers" asp-action="Index" class="btn btn-success text-white">
+                <i class="fas fa-users mr-2"></i>
+                Quản lý User & Cộng tiền
+            </a>
+            <a asp-controller="Orders" asp-action="Index" class="btn btn-outline-light">
+                <i class="fas fa-receipt mr-2"></i>
+                Đơn hàng
+            </a>
+        </div>
+    </section>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success mb-4">@TempData["Success"]</div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger mb-4">@TempData["Error"]</div>
+    }
+
+    <section class="admin-stat-grid">
+        <article class="admin-stat-card">
+            <span class="admin-stat-label">Tong san pham</span>
+            <strong>@Model.TotalProducts</strong>
+            <small>@Model.TotalCategories danh muc dang hoat dong</small>
+        </article>
+
+        <article class="admin-stat-card">
+            <span class="admin-stat-label">Tong don hang</span>
+            <strong>@Model.TotalOrders</strong>
+            <small>@Model.PendingOrders don dang o trang thai chua thanh toan</small>
+        </article>
+
+        <article class="admin-stat-card">
+            <span class="admin-stat-label">Tong doanh thu</span>
+            <strong>@Model.TotalRevenue.ToString("N0") đ</strong>
+            <small>Trung binh @Model.AverageOrderValue.ToString("N0") đ moi don</small>
+        </article>
+
+        <article class="admin-stat-card">
+            <span class="admin-stat-label">Khach hang</span>
+            <strong>@Model.TotalCustomers</strong>
+            <small>Tai khoan user da dang ky</small>
+        </article>
+
+
+    </section>
+
+
+
+    <section class="admin-chart-grid">
+        <article class="admin-panel admin-panel-wide">
+            <div class="admin-panel-header">
+                <div>
+                    <h5 class="mb-1">Doanh thu va don hang 6 thang gan day</h5>
+                    <p class="text-muted mb-0">So sanh nhanh giua tong tien thu ve va so luong don theo thang.</p>
+                </div>
+            </div>
+            <div class="admin-chart-wrap">
+                <canvas id="monthly-performance-chart"></canvas>
+            </div>
+        </article>
+
+        <article class="admin-panel">
+            <div class="admin-panel-header">
+                <div>
+                    <h5 class="mb-1">Ty trong trang thai don</h5>
+                    <p class="text-muted mb-0">Biet ngay don nao dang cho, da xu ly hay can theo doi them.</p>
+                </div>
+            </div>
+            <div class="admin-chart-wrap admin-chart-wrap-square">
+                <canvas id="order-status-chart"></canvas>
+            </div>
+        </article>
+
+        <article class="admin-panel">
+            <div class="admin-panel-header">
+                <div>
+                    <h5 class="mb-1">So luong san pham theo loai</h5>
+                    <p class="text-muted mb-0">Danh muc nao dang chiem nhieu san pham nhat trong cua hang.</p>
+                </div>
+            </div>
+            <div class="admin-chart-wrap admin-chart-wrap-tall">
+                <canvas id="category-product-chart"></canvas>
+            </div>
+        </article>
+    </section>
+
+    <section class="admin-data-grid">
+
+
+        <article class="admin-panel">
+            <div class="admin-panel-header">
+                <div>
+                    <h5 class="mb-1">Don hang gan day</h5>
+                    <p class="text-muted mb-0">Nhin nhanh tinh hinh xu ly don moi nhat.</p>
+                </div>
+            </div>
+
+            <div class="admin-list">
+                @if (Model.RecentOrders.Any())
+                {
+                    @foreach (var order in Model.RecentOrders)
+                    {
+                        <div class="admin-list-row">
+                            <div>
+                                <strong>Don #@order.OrderId - @order.CustomerName</strong>
+                                <small>@AppTimeHelper.ConvertTo(order.OrderDate, TimeZoneConstants.Vietnam).ToString("dd/MM/yyyy HH:mm")</small>
+                            </div>
+                            <div class="text-right">
+                                <div class="admin-order-total">@order.TotalAmount.ToString("N0") đ</div>
+                                <span class="admin-list-badge admin-list-badge-soft">@order.Status</span>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="admin-empty-state">Chua co don hang nao de hien thi.</div>
+                }
+            </div>
+        </article>
+    </section>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const monthlyLabels = @Html.Raw(monthlyLabelsJson);
+        const monthlyRevenue = @Html.Raw(monthlyRevenueJson);
+        const monthlyOrders = @Html.Raw(monthlyOrdersJson);
+        const categoryLabels = @Html.Raw(categoryLabelsJson);
+        const categoryValues = @Html.Raw(categoryValuesJson);
+        const statusLabels = @Html.Raw(statusLabelsJson);
+        const statusValues = @Html.Raw(statusValuesJson);
+
+        const currencyFormat = (value) => new Intl.NumberFormat('vi-VN').format(value) + ' đ';
+
+        const monthlyCtx = document.getElementById('monthly-performance-chart');
+        if (monthlyCtx) {
+            new Chart(monthlyCtx, {
+                data: {
+                    labels: monthlyLabels,
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: 'Doanh thu',
+                            data: monthlyRevenue,
+                            backgroundColor: 'rgba(200, 77, 50, 0.78)',
+                            borderRadius: 14,
+                            borderSkipped: false,
+                            yAxisID: 'yRevenue'
+                        },
+                        {
+                            type: 'line',
+                            label: 'Don hang',
+                            data: monthlyOrders,
+                            borderColor: '#2d7d4d',
+                            backgroundColor: 'rgba(45, 125, 77, 0.18)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 4,
+                            pointHoverRadius: 5,
+                            yAxisID: 'yOrders'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    if (context.dataset.label === 'Doanh thu') {
+                                        return `${context.dataset.label}: ${currencyFormat(context.parsed.y)}`;
+                                    }
+
+                                    return `${context.dataset.label}: ${context.parsed.y}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        yRevenue: {
+                            beginAtZero: true,
+                            position: 'left',
+                            grid: {
+                                color: 'rgba(80, 57, 42, 0.08)'
+                            },
+                            ticks: {
+                                callback: (value) => currencyFormat(value)
+                            }
+                        },
+                        yOrders: {
+                            beginAtZero: true,
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        const statusCtx = document.getElementById('order-status-chart');
+        if (statusCtx) {
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusValues,
+                        backgroundColor: [
+                            '#c84d32',
+                            '#2d7d4d',
+                            '#f2b84b',
+                            '#7b61ff',
+                            '#4d7bbd',
+                            '#7f6a5b'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    cutout: '62%'
+                }
+            });
+        }
+
+        const categoryCtx = document.getElementById('category-product-chart');
+        if (categoryCtx) {
+            new Chart(categoryCtx, {
+                type: 'bar',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        label: 'So san pham',
+                        data: categoryValues,
+                        backgroundColor: '#6f4e37',
+                        borderRadius: 12,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(80, 57, 42, 0.08)'
+                            },
+                            ticks: {
+                                precision: 0
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+}

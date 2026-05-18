@@ -1,0 +1,116 @@
+﻿/* ===== Wrapper ===== */
+.category-wrapper {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+/* ===== Title ===== */
+.category-title {
+    font-weight: bold;
+    margin-bottom: 16px;
+    color: #fff;
+}
+
+/* ===== List ===== */
+.category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 180px; /* ~3 item */
+    overflow-y: auto;
+}
+
+    /* ===== Scroll đẹp ===== */
+    .category-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .category-list::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 10px;
+    }
+
+        .category-list::-webkit-scrollbar-thumb:hover {
+            background: #ff6b6b;
+        }
+
+/* ===== Item ===== */
+.category-item {
+    margin-bottom: 10px;
+    height: 55px;
+}
+
+/* ===== Link ===== */
+.category-link {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 14px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #fff;
+    background: #f8f9fa;
+    transition: all 0.25s ease;
+}
+
+    /* ===== Hover ===== */
+    .category-link:hover {
+        background: #ff6b6b;
+        color: #fff;
+        transform: translateX(5px);
+    }
+
+/* ===== Icon ===== */
+.icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #ff6b6b;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    transition: 0.3s;
+}
+
+.category-link:hover .icon {
+    background: #1e2235;
+    color: #ff6b6b;
+}
+
+/* ===== Name ===== */
+.name {
+    flex: 1;
+    font-weight: 500;
+}
+
+/* ===== Arrow ===== */
+.arrow {
+    transition: 0.3s;
+}
+
+.category-link:hover .arrow {
+    transform: translateX(5px);
+}
+
+/* ===== Active (đang chọn) ===== */
+.category-item.active .category-link {
+    background: #ff6b6b;
+    color: #fff;
+}
+
+/* ===== Fade cuối list (hiệu ứng xịn) ===== */
+.category-wrapper::after {
+    content: "";
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    height: 25px;
+    background: linear-gradient(to top, #fff, transparent);
+    pointer-events: none;
+}
