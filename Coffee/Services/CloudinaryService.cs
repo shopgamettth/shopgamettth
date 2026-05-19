@@ -34,7 +34,7 @@ namespace Coffee.Services
             var uploadParams = new ImageUploadParams
             {
                 File = new FileDescription(file.FileName, stream),
-                Folder = "img/Products"
+                Folder = "img/ProductsShopGame"
             };
 
             var result = await _cloudinary.UploadAsync(uploadParams);
