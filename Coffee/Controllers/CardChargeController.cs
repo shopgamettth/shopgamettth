@@ -91,19 +91,20 @@ namespace Coffee.Controllers
                     
                     // Parse API response
                     var result = Newtonsoft.Json.Linq.JObject.Parse(resultStr);
-                    int status = result["status"] != null ? (int)result["status"] : 100;
-                    string message = result["message"] != null ? (string)result["message"] : "Không thể kết nối API";
-                    decimal value = result["value"] != null ? (decimal)result["value"] : 0;
+                    int status = result.Value<int?>("status") ?? 100;
+                    string message = result.Value<string>("message") ?? "Không thể kết nối API";
+                    decimal value = result.Value<decimal?>("value") ?? 0;
 
                     cardCharge.Message = message;
-                    cardCharge.Status = status;
-                    await _db.SaveChangesAsync();
 
-                    if (status == 1 || status == 2)
+                    if ((status == 1 || status == 2) && value > 0)
                     {
-                        // Cộng tiền ngay khi API trả về thành công (hoặc sai mệnh giá)
+                        cardCharge.Status = 1; // Đã duyệt và cộng tiền
+                        await _db.SaveChangesAsync();
+                        
+                        // Cộng tiền ngay khi API trả về thành công (hoặc sai mệnh giá) và có value
                         var user = _db.Users.FirstOrDefault(u => u.UserId == cardCharge.UserId);
-                        if (user != null && value > 0)
+                        if (user != null)
                         {
                             user.Balance = (user.Balance ?? 0) + value;
                             var trans = new Transaction
@@ -118,12 +119,17 @@ namespace Coffee.Controllers
                         }
                         TempData["Success"] = $"Nạp thẻ thành công và đã cộng {value:N0}đ vào tài khoản!";
                     }
-                    else if (status == 99)
+                    else if (status == 1 || status == 2 || status == 99)
                     {
-                        TempData["Success"] = "Gửi thẻ thành công. Hệ thống đang duyệt thẻ, vui lòng xem lịch sử!";
+                        // Thành công nhưng chưa có value, hoặc đang chờ duyệt
+                        cardCharge.Status = 99; // Giữ trạng thái PENDING để chờ callback
+                        await _db.SaveChangesAsync();
+                        TempData["Success"] = "Gửi thẻ thành công. Hệ thống đang duyệt thẻ, vui lòng chờ chút xíu!";
                     }
                     else
                     {
+                        cardCharge.Status = status;
+                        await _db.SaveChangesAsync();
                         TempData["Error"] = $"Lỗi gửi thẻ: {message}";
                     }
                 }
