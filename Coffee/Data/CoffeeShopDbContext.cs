@@ -34,6 +34,8 @@ public partial class CoffeeShopDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<CardCharge> CardCharges { get; set; }
+
  
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

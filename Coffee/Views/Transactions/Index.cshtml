@@ -55,4 +55,69 @@
             
         </div>
     </div>
+    
+    <div class="row mt-5">
+        <div class="col-lg-10 mx-auto">
+            <h2 class="mb-4 text-white">Lịch Sử Nạp Thẻ (TSR)</h2>
+            <div class="card bg-dark border-0 shadow">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0">
+                            <thead class="text-uppercase text-muted" style="font-size: 0.85rem;">
+                                <tr>
+                                    <th class="py-3 px-4">Thời Gian</th>
+                                    <th class="py-3 px-4">Thẻ</th>
+                                    <th class="py-3 px-4 text-right">Mệnh Giá</th>
+                                    <th class="py-3 px-4 text-center">Trạng Thái</th>
+                                    <th class="py-3 px-4">Ghi Chú</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.CardCharges != null && ((IEnumerable<Coffee.Models.CardCharge>)ViewBag.CardCharges).Any())
+                                {
+                                    @foreach (var c in (IEnumerable<Coffee.Models.CardCharge>)ViewBag.CardCharges)
+                                    {
+                                        <tr>
+                                            <td class="py-3 px-4 align-middle text-muted">@Coffee.Helper.AppTimeHelper.ConvertTo(c.CreatedAt, Coffee.Util.TimeZoneConstants.Vietnam).ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td class="py-3 px-4 align-middle">
+                                                <strong>@c.Telco</strong><br/>
+                                                <small class="text-muted">Mã: @c.Code</small><br/>
+                                                <small class="text-muted">Seri: @c.Serial</small>
+                                            </td>
+                                            <td class="py-3 px-4 align-middle text-right">@c.DeclaredValue.ToString("N0")</td>
+                                            <td class="py-3 px-4 align-middle text-center">
+                                                @if (c.Status == 99)
+                                                {
+                                                    <span class="badge badge-warning text-dark">Chờ duyệt</span>
+                                                }
+                                                else if (c.Status == 1)
+                                                {
+                                                    <span class="badge badge-success">Thành công</span>
+                                                }
+                                                else if (c.Status == 2)
+                                                {
+                                                    <span class="badge badge-info">Sai mệnh giá</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-danger">Lỗi/Thất bại</span>
+                                                }
+                                            </td>
+                                            <td class="py-3 px-4 align-middle text-muted" style="max-width: 200px; white-space: normal;">@c.Message</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5 text-muted">Chưa có giao dịch nạp thẻ nào.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

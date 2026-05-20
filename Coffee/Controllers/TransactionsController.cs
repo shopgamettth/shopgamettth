@@ -29,6 +29,13 @@ namespace Coffee.Controllers
                 .OrderByDescending(t => t.CreatedAt)
                 .ToList();
 
+            var cardCharges = db.CardCharges
+                .Where(c => c.UserId == userId)
+                .OrderByDescending(c => c.CreatedAt)
+                .ToList();
+
+            ViewBag.CardCharges = cardCharges;
+
             return View(transactions);
         }
     }
