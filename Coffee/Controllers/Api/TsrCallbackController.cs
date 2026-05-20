@@ -71,8 +71,8 @@ namespace Coffee.Controllers.Api
                 return Ok(new { status = true, message = "Đã xử lý trước đó" });
             }
 
-            // Kiểm tra chữ ký bảo mật: callback_sign = md5(partner_key + code + serial)
-            var expectedSign = CreateMD5(PartnerKey + data.code + data.serial);
+            // Kiểm tra chữ ký bảo mật: callback_sign = md5(partner_key + code + command + partner_id + request_id + serial + telco)
+            var expectedSign = CreateMD5(PartnerKey + data.code + "charging" + PartnerId + data.request_id + data.serial + data.telco);
             if (expectedSign != data.callback_sign)
             {
                 _logger.LogWarning($"Sai chữ ký callback TSR: {data.request_id}");

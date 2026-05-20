@@ -89,15 +89,36 @@ namespace Coffee.Controllers
                     var response = await client.PostAsync(ApiUrl, content);
                     var resultStr = await response.Content.ReadAsStringAsync();
                     
+                    // Parse API response
                     var result = Newtonsoft.Json.Linq.JObject.Parse(resultStr);
                     int status = result["status"] != null ? (int)result["status"] : 100;
                     string message = result["message"] != null ? (string)result["message"] : "Không thể kết nối API";
+                    decimal value = result["value"] != null ? (decimal)result["value"] : 0;
 
                     cardCharge.Message = message;
                     cardCharge.Status = status;
                     await _db.SaveChangesAsync();
 
-                    if (status == 99)
+                    if (status == 1 || status == 2)
+                    {
+                        // Cộng tiền ngay khi API trả về thành công (hoặc sai mệnh giá)
+                        var user = _db.Users.FirstOrDefault(u => u.UserId == cardCharge.UserId);
+                        if (user != null && value > 0)
+                        {
+                            user.Balance = (user.Balance ?? 0) + value;
+                            var trans = new Transaction
+                            {
+                                UserId = user.UserId,
+                                Amount = value,
+                                Note = $"Nạp ngay TSR thẻ {cardCharge.Telco} {value:N0}đ (Mã: {cardCharge.RequestId})",
+                                CreatedAt = DateTime.UtcNow
+                            };
+                            _db.Transactions.Add(trans);
+                            await _db.SaveChangesAsync();
+                        }
+                        TempData["Success"] = $"Nạp thẻ thành công và đã cộng {value:N0}đ vào tài khoản!";
+                    }
+                    else if (status == 99)
                     {
                         TempData["Success"] = "Gửi thẻ thành công. Hệ thống đang duyệt thẻ, vui lòng xem lịch sử!";
                     }
