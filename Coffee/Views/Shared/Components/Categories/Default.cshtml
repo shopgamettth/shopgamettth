@@ -6,67 +6,75 @@
     var selectedCategory = ViewContext.HttpContext.Request.Query["loai"].ToString();
 }
 
-<div class="category-wrapper">
-    <div class="category-header">
-        <div>
-            <span class="category-kicker" style="color:#ff0055;">DANH MỤC GAME</span>
-            <h4 class="category-title">Loại Tài Khoản</h4>
-            <p class="category-intro">Chọn nhanh loại tài khoản để tìm được acc vừa ý với bạn nhất.</p>
-        </div>
-        <span class="category-badge">@Model.Count()</span>
+<div class="category-horizontal-wrapper mb-4">
+    <div class="d-flex align-items-center mb-3">
+        <h4 class="text-white fw-bold m-0"><i class="fas fa-gamepad text-warning me-2"></i> DANH MỤC GAME</h4>
+        <span class="badge bg-danger ms-3 rounded-pill">@Model.Count() Game</span>
     </div>
 
-    <div class="category-summary">
-        <span><i class="fas fa-layer-group mr-2"></i>@Model.Count() danh mục acc</span>
-        <span><i class="fas fa-fire mr-2"></i>Acc VIP được ưu tiên hiển thị</span>
-    </div>
+    <div class="category-scroll-container">
+        <a asp-controller="Products"
+           asp-action="Index"
+           class="category-btn @(string.IsNullOrWhiteSpace(selectedCategory) ? "active" : "")">
+            <i class="fas fa-th-large me-2"></i> Tất cả
+        </a>
 
-    <a asp-controller="Products"
-       asp-action="Index"
-       class="category-link category-link-all @(string.IsNullOrWhiteSpace(selectedCategory) ? "is-active" : null)">
-        <span class="category-icon-shell">
-            <i class="fas fa-th-large"></i>
-        </span>
-
-        <span class="category-copy">
-            <span class="name">Tất cả Account</span>
-            <small>Xem toàn bộ tài khoản có trong shop</small>
-        </span>
-
-        <span class="arrow">
-            <i class="fas fa-chevron-right"></i>
-        </span>
-    </a>
-
-    <div class="category-list-shell">
-        <ul class="category-list">
-            @foreach (var c in Model)
-            {
-                var isActive = string.Equals(selectedCategory, c.Id.ToString(), StringComparison.OrdinalIgnoreCase);
-                var description = string.IsNullOrWhiteSpace(c.Description)
-                    ? "Danh mục được tìm kiếm nhiều nhất"
-                    : c.Description;
-
-                <li class="category-item">
-                    <a asp-controller="Products"
-                       asp-action="Index"
-                       asp-route-loai="@c.Id"
-                       class="category-link @(isActive ? "is-active" : null)">
-                        <span class="category-icon-shell">
-                            <i class="fas fa-gamepad"></i>
-                        </span>
-
-                        <span class="category-copy">
-                            <span class="name">@c.Name</span>
-                            <small>@description</small>
-                        </span>
-
-                        <span class="arrow">
-                            <i class="fas fa-chevron-right"></i>
-                        </span>
-                    </a>
-                </li>
-            }
-        </ul>
+        @foreach (var c in Model)
+        {
+            var isActive = string.Equals(selectedCategory, c.Id.ToString(), StringComparison.OrdinalIgnoreCase);
+            
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-loai="@c.Id"
+               class="category-btn @(isActive ? "active" : "")">
+                <i class="fas fa-gamepad me-2"></i> @c.Name
+            </a>
+        }
     </div>
 </div>
+
+<style>
+    .category-scroll-container {
+        display: flex;
+        overflow-x: auto;
+        gap: 12px;
+        padding-bottom: 10px;
+        scrollbar-width: thin;
+        scrollbar-color: #ff0055 transparent;
+    }
+    
+    .category-scroll-container::-webkit-scrollbar {
+        height: 6px;
+    }
+    .category-scroll-container::-webkit-scrollbar-thumb {
+        background: #ff0055;
+        border-radius: 10px;
+    }
+
+    .category-btn {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        background: #1e2235;
+        color: #a0a5ba;
+        padding: 10px 20px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: 600;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: all 0.3s ease;
+    }
+
+    .category-btn:hover {
+        color: #fff;
+        background: #2a2e45;
+        transform: translateY(-2px);
+    }
+
+    .category-btn.active {
+        background: linear-gradient(135deg, #ff0055 0%, #ff4d4f 100%);
+        color: #fff;
+        border-color: #ff0055;
+        box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3);
+    }
+</style>
