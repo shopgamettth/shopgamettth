@@ -16,7 +16,7 @@ namespace Coffee.Controllers.Api
     {
         private readonly CoffeeShopDbContext _db;
         private readonly ILogger<TsrCallbackController> _logger;
-        
+        private const string PartnerId = "32027401280";
         private const string PartnerKey = "ca31c019d27be9e6388f9f2e60e7dfd2";
 
         public TsrCallbackController(CoffeeShopDbContext db, ILogger<TsrCallbackController> logger)
