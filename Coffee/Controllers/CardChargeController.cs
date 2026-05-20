@@ -49,8 +49,8 @@ namespace Coffee.Controllers
             var declaredValue = decimal.Parse(amount);
             var requestId = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 15) + DateTime.Now.Ticks.ToString().Substring(0, 5);
 
-            // Sinh chữ ký: md5(partner_key + code + serial)
-            var signString = PartnerKey + code + serial;
+            // Sinh chữ ký: partner_key + code + command + partner_id + request_id + serial + telco
+            var signString = PartnerKey + code + "charging" + PartnerId + requestId + serial + telco;
             var sign = CreateMD5(signString);
 
             var requestData = new
