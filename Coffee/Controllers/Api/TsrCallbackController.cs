@@ -27,10 +27,31 @@ namespace Coffee.Controllers.Api
 
         [HttpPost]
         [HttpGet]
-        public async Task<IActionResult> Callback([FromForm] TsrCallbackRequest req, [FromQuery] TsrCallbackRequest reqQuery)
+        public async Task<IActionResult> Callback()
         {
-            // Hỗ trợ cả GET và POST từ TSR
-            var data = req.status != 0 ? req : reqQuery;
+            // Tự đọc dữ liệu từ Form (POST) hoặc Query (GET)
+            var dict = HttpContext.Request.HasFormContentType ? HttpContext.Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString()) 
+                                                              : HttpContext.Request.Query.ToDictionary(x => x.Key, x => x.Value.ToString());
+
+            if (!dict.ContainsKey("request_id"))
+            {
+                return BadRequest(new { status = false, message = "Thiếu dữ liệu" });
+            }
+
+            var data = new TsrCallbackRequest
+            {
+                status = dict.ContainsKey("status") ? int.Parse(dict["status"]) : 0,
+                message = dict.GetValueOrDefault("message"),
+                request_id = dict.GetValueOrDefault("request_id"),
+                trans_id = dict.GetValueOrDefault("trans_id"),
+                declared_value = dict.ContainsKey("declared_value") ? decimal.Parse(dict["declared_value"]) : 0,
+                value = dict.ContainsKey("value") ? decimal.Parse(dict["value"]) : 0,
+                amount = dict.ContainsKey("amount") ? decimal.Parse(dict["amount"]) : 0,
+                code = dict.GetValueOrDefault("code"),
+                serial = dict.GetValueOrDefault("serial"),
+                telco = dict.GetValueOrDefault("telco"),
+                callback_sign = dict.GetValueOrDefault("callback_sign")
+            };
 
             if (data == null || string.IsNullOrEmpty(data.request_id))
             {
@@ -64,14 +85,11 @@ namespace Coffee.Controllers.Api
             charge.RealValue = data.value;
             charge.UpdatedAt = DateTime.UtcNow;
 
-            // Nếu thành công đúng mệnh giá (status = 1) hoặc sai mệnh giá (status = 2) thì cộng tiền
-            if (data.status == 1 || data.status == 2)
+            // Nếu có giá trị thực tế (value) trả về > 0 thì luôn cộng tiền (auto credit) 
+            if (data.value > 0)
             {
-                // Quy tắc Shop: Cộng 100% mệnh giá khách khai báo, hoặc mệnh giá thực
-                // Ở đây mình ưu tiên cộng mệnh giá khai báo (declared_value) hoặc mệnh giá thực của thẻ (value).
-                // Chọn cộng theo mệnh giá được duyệt thực tế (data.value) để đảm bảo không bị lỗi nếu khách khai gian
                 var user = _db.Users.FirstOrDefault(u => u.UserId == charge.UserId);
-                if (user != null && data.value > 0)
+                if (user != null)
                 {
                     user.Balance = (user.Balance ?? 0) + data.value;
 
@@ -85,6 +103,8 @@ namespace Coffee.Controllers.Api
                     };
                     _db.Transactions.Add(trans);
                 }
+                // Đánh dấu đã cộng tiền để tránh double credit
+                charge.Status = 1; // Đánh dấu đã cộng tiền thành công
             }
 
             await _db.SaveChangesAsync();
