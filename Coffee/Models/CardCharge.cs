@@ -36,12 +36,12 @@ namespace Coffee.Models
         [StringLength(50)]
         public string RequestId { get; set; } // Mã GD hệ thống mình sinh ra
 
-        public string TransId { get; set; } // Mã GD bên TSR trả về
+        public string? TransId { get; set; } // Mã GD bên TSR trả về
 
         // 99: Đang chờ, 1: Thành công, 2: Sai mệnh giá, 3: Thẻ lỗi, 4: Bảo trì, 100: Thất bại gửi
         public int Status { get; set; } = 99; 
 
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
