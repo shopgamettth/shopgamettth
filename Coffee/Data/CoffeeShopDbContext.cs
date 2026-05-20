@@ -36,6 +36,10 @@ public partial class CoffeeShopDbContext : DbContext
 
     public virtual DbSet<CardCharge> CardCharges { get; set; }
 
+    public virtual DbSet<Game> Games { get; set; }
+    public virtual DbSet<GameItemPackage> GameItemPackages { get; set; }
+    public virtual DbSet<GameItemOrder> GameItemOrders { get; set; }
+
  
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -190,6 +194,50 @@ public partial class CoffeeShopDbContext : DbContext
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
                 .HasConstraintName("FK__Users__RoleId__3D5E1FD2");
+        });
+        modelBuilder.Entity<Game>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).HasMaxLength(200);
+            entity.Property(e => e.ImageUrl).HasMaxLength(500);
+            entity.Property(e => e.ImagePublicId).HasMaxLength(200);
+        });
+
+        modelBuilder.Entity<GameItemPackage>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.PackageName).HasMaxLength(200);
+            entity.Property(e => e.ImageUrl).HasMaxLength(500);
+            entity.Property(e => e.ImagePublicId).HasMaxLength(200);
+
+            entity.HasOne(d => d.Game).WithMany(p => p.GameItemPackages)
+                .HasForeignKey(d => d.GameId);
+        });
+
+        modelBuilder.Entity<GameItemOrder>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.PlayerId).HasMaxLength(200);
+            
+            var createdAtProperty = entity.Property(e => e.CreatedAt);
+            if (isSqlServer)
+            {
+                createdAtProperty.HasColumnType("datetimeoffset").HasDefaultValueSql("SYSDATETIMEOFFSET()");
+                entity.Property(e => e.UpdatedAt).HasColumnType("datetimeoffset");
+            }
+            else if (isNpgsql)
+            {
+                createdAtProperty.HasColumnType("timestamp with time zone").HasDefaultValueSql("CURRENT_TIMESTAMP");
+                entity.Property(e => e.UpdatedAt).HasColumnType("timestamp with time zone");
+            }
+
+            entity.HasOne(d => d.User).WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(d => d.GameItemPackage).WithMany(p => p.GameItemOrders)
+                .HasForeignKey(d => d.GameItemPackageId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         OnModelCreatingPartial(modelBuilder);

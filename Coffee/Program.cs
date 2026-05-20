@@ -83,6 +83,7 @@ internal class Program
         ProductSchemaInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
         OrderStatusDataInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
         RoleDataInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
+        GameItemSchemaInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
 
         // =========================
         // PIPELINE

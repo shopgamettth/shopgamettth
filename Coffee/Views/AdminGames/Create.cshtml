@@ -1,0 +1,31 @@
+@model Coffee.Models.Game
+@{
+    ViewData["Title"] = "Thêm Game Mới";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4 mb-5" style="min-height: 70vh;">
+    <h2 class="text-white mb-4">Thêm Game Mới</h2>
+
+    <div class="bg-dark p-4 rounded col-md-6 text-white">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Tên Game <span class="text-danger">*</span></label>
+                <input asp-for="Name" class="form-control text-dark" required placeholder="Ví dụ: Free Fire, Liên Quân..." />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Mô tả ngắn</label>
+                <textarea asp-for="Description" class="form-control text-dark" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Ảnh đại diện (Icon Game)</label>
+                <input type="file" name="ImageFile" class="form-control text-dark" accept="image/*" />
+            </div>
+
+            <button type="submit" class="btn btn-danger">Thêm Mới</button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">Hủy</a>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,95 @@
+@model Coffee.Models.Game
+@{
+    ViewData["Title"] = "Quản lý Gói Item - " + Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4 mb-5" style="min-height: 70vh;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-white">Gói Item: <span class="text-danger">@Model.Name</span></h2>
+        <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách Game</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="row">
+        <!-- Cột thêm gói mới -->
+        <div class="col-md-4 mb-4">
+            <div class="bg-dark p-3 rounded text-white h-100">
+                <h4 class="mb-3 text-warning">Thêm Gói Mới</h4>
+                <form asp-action="AddPackage" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="GameId" value="@Model.Id" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Tên gói (VD: 25 Kim Cương) <span class="text-danger">*</span></label>
+                        <input type="text" name="PackageName" class="form-control text-dark" required />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Giá tiền (VNĐ) <span class="text-danger">*</span></label>
+                        <input type="number" name="Price" class="form-control text-dark" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Hình ảnh gói (Tùy chọn)</label>
+                        <input type="file" name="ImageFile" class="form-control text-dark" accept="image/*" />
+                    </div>
+
+                    <button type="submit" class="btn btn-danger w-100">Thêm Gói</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Cột danh sách gói hiện có -->
+        <div class="col-md-8 mb-4">
+            <div class="bg-dark p-3 rounded text-white h-100">
+                <h4 class="mb-3 text-info">Danh Sách Gói Item</h4>
+                
+                @if (Model.GameItemPackages == null || !Model.GameItemPackages.Any())
+                {
+                    <p class="text-muted">Chưa có gói item nào cho game này.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Ảnh</th>
+                                    <th>Tên gói</th>
+                                    <th>Giá</th>
+                                    <th class="text-end">Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var pkg in Model.GameItemPackages)
+                                {
+                                    <tr>
+                                        <td>@pkg.Id</td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(pkg.ImageUrl))
+                                            {
+                                                <img src="@pkg.ImageUrl" style="width: 40px; border-radius: 5px;" />
+                                            }
+                                        </td>
+                                        <td class="fw-bold">@pkg.PackageName</td>
+                                        <td class="text-warning">@pkg.Price.ToString("N0") đ</td>
+                                        <td class="text-end">
+                                            <form asp-action="DeletePackage" asp-route-id="@pkg.Id" method="post" onsubmit="return confirm('Bạn có chắc muốn xóa gói này?');">
+                                                <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

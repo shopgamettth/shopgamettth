@@ -67,6 +67,10 @@
                             <i class="fas fa-gamepad"></i>
                             <span>Nick Game</span>
                         </a>
+                        <a asp-controller="GameItems" asp-action="Index" class="nav-item nav-link @(IsController("GameItems") ? "active" : null)">
+                            <i class="fas fa-gem"></i>
+                            <span>Mua Item</span>
+                        </a>
                         <a asp-controller="Home" asp-action="Service" class="nav-item nav-link @(isService ? "active" : null)">
                             <i class="fas fa-wallet"></i>
                             <span>Nạp TSR</span>
