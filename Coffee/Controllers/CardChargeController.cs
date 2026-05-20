@@ -90,8 +90,8 @@ namespace Coffee.Controllers
                     var resultStr = await response.Content.ReadAsStringAsync();
                     
                     var result = Newtonsoft.Json.Linq.JObject.Parse(resultStr);
-                    int status = result["status"] != null ? result["status"].Value<int>() : 100;
-                    string message = result["message"] != null ? result["message"].Value<string>() : "Không thể kết nối API";
+                    int status = result["status"] != null ? (int)result["status"] : 100;
+                    string message = result["message"] != null ? (string)result["message"] : "Không thể kết nối API";
 
                     cardCharge.Message = message;
                     cardCharge.Status = status;
