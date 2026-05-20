@@ -32,8 +32,17 @@ internal class Program
         }
 
         builder.Services.AddDbContext<CoffeeShopDbContext>(options =>
-            //options.UseNpgsql(myConnectionString));
-        options.UseSqlServer(myConnectionString));
+        {
+            if (myConnectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase) || 
+                myConnectionString.Contains("Port=", StringComparison.OrdinalIgnoreCase))
+            {
+                options.UseNpgsql(myConnectionString);
+            }
+            else
+            {
+                options.UseSqlServer(myConnectionString);
+            }
+        });
 
         builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
         builder.Services.Configure<MomoPaymentSettings>(builder.Configuration.GetSection("MomoPaymentSettings"));
