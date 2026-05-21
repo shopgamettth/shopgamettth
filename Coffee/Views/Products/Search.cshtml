@@ -1,20 +1,22 @@
 @model IEnumerable<Coffee.DTO.ProductDTO>
 
 @{
-    ViewData["Title"] = "Search";
+    ViewData["Title"] = "Kết quả tìm kiếm";
     Layout = "_ProductsCoffee";
 }
-<div class="product-layout mt-4">
-    @* loại sản phẩm *@
-    <div class="sidebar">
-        @await Component.InvokeAsync("Categories", Model)
+
+<div class="container-fluid mt-4 px-4">
+    <!-- Header Thông báo tìm kiếm -->
+    <div class="mb-4 text-center">
+        <h2 class="game-title-hot" style="font-size: 2rem;">Kết quả tìm kiếm</h2>
+        <p class="text-muted">Các tài khoản phù hợp với yêu cầu của bạn được hiển thị bên dưới.</p>
     </div>
 
-    @* sản phẩm *@
+    <!-- Categories Horizontal Bar -->
+    @await Component.InvokeAsync("Categories")
+
+    <!-- Products List -->
     @await Html.PartialAsync("_Products", Model)
-
-
-
 </div>
 
 @section Scripts {
