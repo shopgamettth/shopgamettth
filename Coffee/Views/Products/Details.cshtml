@@ -21,12 +21,13 @@
             <div class="product-detail-visual">
                 <div class="product-detail-image-card">
                     <div class="product-detail-image-wrap">
-                        <img id="mainImage" src="@productImage" alt="@Model.ProductName" style="width:100%; object-fit:cover; border-radius: 8px;" />
+                        <img id="mainImage" src="@productImage" alt="@Model.ProductName" style="width:100%; object-fit:cover; border-radius: 8px; cursor: zoom-in;" onclick="openLightbox()" />
                     </div>
                     @if(Model.ExtraImageUrls != null && Model.ExtraImageUrls.Any()) {
-                        <div class="d-flex mt-3" style="overflow-x:auto; gap:10px; padding-bottom:10px;">
+                        <div class="d-flex mt-3" style="overflow-x:auto; gap:10px; padding-bottom:10px;" id="thumbnailContainer">
+                            <img src="@productImage" class="thumbnail-img" style="width:80px; height:80px; min-width:80px; object-fit:cover; border-radius:8px; cursor:pointer; border:2px solid #00ff88;" onclick="changeMainImage(this)" />
                             @foreach(var img in Model.ExtraImageUrls) {
-                                <img src="@img" style="width:80px; height:80px; min-width:80px; object-fit:cover; border-radius:8px; cursor:pointer; border:2px solid transparent;" onclick="document.getElementById('mainImage').src=this.src" />
+                                <img src="@img" class="thumbnail-img" style="width:80px; height:80px; min-width:80px; object-fit:cover; border-radius:8px; cursor:pointer; border:2px solid transparent;" onclick="changeMainImage(this)" />
                             }
                         </div>
                     }
@@ -104,6 +105,145 @@
     </div>
 </section>
 
+<!-- Lightbox Overlay -->
+<div id="lightboxOverlay" class="lightbox-overlay" style="display:none;" onclick="closeLightbox(event)">
+    <span class="lightbox-close" onclick="closeLightbox(event)">&times;</span>
+    <span class="lightbox-prev" onclick="changeLightboxImage(-1, event)">&#10094;</span>
+    <img id="lightboxImage" class="lightbox-content" />
+    <span class="lightbox-next" onclick="changeLightboxImage(1, event)">&#10095;</span>
+</div>
+
 @section Scripts {
     <script src="~/js/Products/Products.js" asp-append-version="true"></script>
+    <script>
+        let currentImageIndex = 0;
+        let imageList = [];
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let mainSrc = document.getElementById('mainImage').src;
+            imageList.push(mainSrc);
+
+            let thumbs = document.querySelectorAll('.thumbnail-img');
+            thumbs.forEach(function(t, idx) {
+                if (idx > 0) {
+                    imageList.push(t.src);
+                }
+            });
+            if(imageList.length === 1 && thumbs.length > 0) {
+                imageList = Array.from(thumbs).map(t => t.src);
+            }
+        });
+
+        function changeMainImage(element) {
+            document.getElementById('mainImage').src = element.src;
+            let thumbs = document.querySelectorAll('.thumbnail-img');
+            thumbs.forEach(t => t.style.borderColor = 'transparent');
+            element.style.borderColor = '#00ff88';
+            
+            currentImageIndex = imageList.indexOf(element.src);
+            if(currentImageIndex === -1) currentImageIndex = 0;
+        }
+
+        function openLightbox() {
+            let overlay = document.getElementById('lightboxOverlay');
+            let lbImg = document.getElementById('lightboxImage');
+            lbImg.src = document.getElementById('mainImage').src;
+            overlay.style.display = 'flex';
+        }
+
+        function closeLightbox(e) {
+            if (e.target.id === 'lightboxOverlay' || e.target.className === 'lightbox-close') {
+                document.getElementById('lightboxOverlay').style.display = 'none';
+            }
+        }
+
+        function changeLightboxImage(direction, e) {
+            e.stopPropagation();
+            if (imageList.length === 0) return;
+            
+            currentImageIndex += direction;
+            if (currentImageIndex >= imageList.length) {
+                currentImageIndex = 0;
+            } else if (currentImageIndex < 0) {
+                currentImageIndex = imageList.length - 1;
+            }
+            
+            document.getElementById('lightboxImage').src = imageList[currentImageIndex];
+            
+            let thumbs = document.querySelectorAll('.thumbnail-img');
+            if(thumbs.length > 0 && thumbs.length === imageList.length) {
+                changeMainImage(thumbs[currentImageIndex]);
+            }
+        }
+        
+        document.addEventListener('keydown', function(e) {
+            let overlay = document.getElementById('lightboxOverlay');
+            if (overlay && overlay.style.display === 'flex') {
+                if (e.key === 'Escape') closeLightbox({target: {className: 'lightbox-close'}});
+                if (e.key === 'ArrowLeft') changeLightboxImage(-1, e);
+                if (e.key === 'ArrowRight') changeLightboxImage(1, e);
+            }
+        });
+    </script>
+
+    <style>
+        .lightbox-overlay {
+            position: fixed;
+            z-index: 99999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 100000;
+        }
+        .lightbox-close:hover {
+            color: #00ff88;
+        }
+        .lightbox-prev, .lightbox-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 16px;
+            transition: 0.3s;
+            background-color: rgba(0,0,0,0.5);
+            border-radius: 4px;
+            z-index: 100000;
+        }
+        .lightbox-prev { left: 20px; }
+        .lightbox-next { right: 20px; }
+        .lightbox-prev:hover, .lightbox-next:hover {
+            background-color: rgba(0,0,0,0.8);
+            color: #00ff88;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
 }

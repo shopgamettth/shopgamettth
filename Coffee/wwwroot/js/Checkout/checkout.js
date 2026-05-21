@@ -15,21 +15,21 @@
         const isMomo = selectedValue === 'MOMO';
 
         if (submitButton) {
-            submitButton.textContent = isMomo ? 'Tiep tuc thanh toan MoMo' : 'Dat hang COD';
+            submitButton.textContent = isMomo ? 'Tiep tuc thanh toan MoMo' : 'Thanh toán Nick Game';
         }
 
         if (summaryHeading) {
-            summaryHeading.textContent = isMomo ? 'Thanh toan MoMo' : 'Thanh toan COD';
+            summaryHeading.textContent = isMomo ? 'Thanh toan MoMo' : 'Thanh toán Nick Game';
         }
 
         if (paymentNoteTitle) {
-            paymentNoteTitle.textContent = isMomo ? 'Thanh toan MoMo' : 'Thanh toan COD';
+            paymentNoteTitle.textContent = isMomo ? 'Thanh toan MoMo' : 'Thanh toán Nick Game';
         }
 
         if (paymentNoteBody) {
             paymentNoteBody.textContent = isMomo
                 ? 'Sau khi ban thanh toan thanh cong qua MoMo va xac nhan, he thong se cap nhat don sang da thanh toan.'
-                : 'Don COD se duoc tao voi trang thai chua thanh toan. Khi admin duyet don, he thong se cap nhat sang da thanh toan.';
+                : 'Đơn hàng sẽ được hệ thống xử lý tự động. Vui lòng kiểm tra mục "Đơn hàng của tôi" sau khi thanh toán thành công.';
         }
 
         if (momoHint) {
