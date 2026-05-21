@@ -190,7 +190,8 @@ namespace Coffee.Controllers
                         product.IsSold = true;
                     }
 
-                    var cartItems = db.Carts.Where(c => c.UserId == userId && c.ProductId == item.ProductId);
+                    // Xóa sản phẩm khỏi giỏ hàng của tất cả người dùng vì mỗi nick chỉ được bán 1 lần
+                    var cartItems = db.Carts.Where(c => c.ProductId == item.ProductId);
                     db.Carts.RemoveRange(cartItems);
                 }
 
