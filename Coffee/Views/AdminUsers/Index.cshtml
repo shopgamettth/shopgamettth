@@ -40,10 +40,12 @@
                                 <td class="text-warning fw-bold">@((u.Balance ?? 0).ToString("N0"))</td>
                                 <td>@u.CreatedAt?.ToString("dd/MM/yyyy")</td>
                                 <td>
-                                    <form asp-action="AddBalance" method="post" class="d-flex">
+                                    <form asp-action="UpdateBalance" method="post" class="d-flex">
                                         <input type="hidden" name="userId" value="@u.UserId" />
-                                        <input type="number" name="amount" class="form-control mr-2 bg-dark text-white border-secondary" placeholder="Số tiền..." required min="1000" style="width: 150px;" />
-                                        <button type="submit" class="btn btn-success btn-sm whitespace-nowrap">Cộng Tiền</button>
+                                        <input type="number" name="amount" class="form-control mr-2 bg-dark text-white border-secondary" placeholder="Số tiền..." required min="0" style="width: 120px;" />
+                                        <button type="submit" name="actionType" value="add" class="btn btn-success btn-sm mr-1 whitespace-nowrap" title="Cộng thêm tiền" onclick="return confirm('Bạn muốn cộng thêm số tiền này?')"><i class="fas fa-plus"></i></button>
+                                        <button type="submit" name="actionType" value="subtract" class="btn btn-warning btn-sm mr-1 whitespace-nowrap" title="Trừ tiền" onclick="return confirm('Bạn muốn trừ số tiền này?')"><i class="fas fa-minus"></i></button>
+                                        <button type="submit" name="actionType" value="set" class="btn btn-info btn-sm whitespace-nowrap" title="Đặt lại chính xác số tiền này" onclick="return confirm('Bạn muốn cài đặt số dư chính xác bằng số này?')"><i class="fas fa-edit"></i></button>
                                     </form>
                                 </td>
                             </tr>
