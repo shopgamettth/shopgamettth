@@ -7,6 +7,10 @@
 
 body {
     background-color: var(--dark) !important;
+    background-image: url('../img/bg.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
     color: var(--light) !important;
 }
 

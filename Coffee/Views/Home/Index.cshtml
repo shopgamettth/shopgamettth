@@ -1,13 +1,127 @@
+@model IEnumerable<Coffee.DTO.ProductDTO>
 @{
     ViewData["Title"] = "Trang Chủ";
 }
 @section Css {
     <link rel="stylesheet" href="~/css/Products/product.css" />
-    
+    <style>
+        .home-product-carousel .owl-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .home-product-carousel .owl-nav button {
+            background: var(--primary) !important;
+            color: #121212 !important;
+            width: 40px;
+            height: 40px;
+            border-radius: 50% !important;
+            margin: 0 10px;
+            font-size: 20px !important;
+            transition: all 0.3s;
+        }
+        .home-product-carousel .owl-nav button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px var(--primary);
+        }
+        .product-card {
+            background: #1e1e1e !important;
+            border: 1px solid #333 !important;
+            border-radius: 15px !important;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(240, 193, 75, 0.3) !important;
+            border-color: var(--primary) !important;
+        }
+    </style>
 }
 
 <!-- About Start -->
 @await Html.PartialAsync("_About")
 <!-- About End -->
 
+<!-- Featured Accounts Start -->
+<div class="container-fluid pt-5 pb-3">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="text-primary mb-3" style="text-shadow: 0 0 10px rgba(240, 193, 75, 0.5);">🎮 TÀI KHOẢN HIỆN CÓ</h1>
+            <p class="text-white">Chọn ngay một nick xịn xò để chiến thôi nào</p>
+        </div>
+        <div class="owl-carousel home-product-carousel">
+            @foreach (var item in Model)
+            {
+                <div class="card h-100 product-card mx-2">
+                    <div class="position-relative overflow-hidden" style="height:200px;">
+                        <img src="@item.ImageUrl" class="card-img-top w-100 h-100 object-fit-cover" alt="@item.ProductName">
+                        <div class="product-overlay d-flex align-items-center justify-content-center" style="position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); opacity:0; transition:0.3s;">
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary rounded-pill py-2 px-4">
+                                <i class="fas fa-eye mr-2"></i> Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body p-4 text-center">
+                        <h5 class="text-white mb-3 text-truncate" style="font-size: 1.1rem;">@item.ProductName</h5>
+                        <h4 class="text-primary mb-3">@item.Price.ToString("N0") đ</h4>
+                        @if (item.IsSold)
+                        {
+                            <span class="badge bg-secondary p-2 px-3 w-100">Đã bán</span>
+                        }
+                        else
+                        {
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-outline-primary btn-add-cart w-100 mr-1" data-productid="@item.Id">
+                                    <i class="fas fa-cart-plus"></i> Thêm giỏ
+                                </button>
+                                <form asp-controller="Checkout" asp-action="BuyNow" method="get" class="w-100 ml-1">
+                                    <input type="hidden" name="productId" value="@item.Id" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <button type="submit" class="btn btn-primary w-100">Mua ngay</button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center mt-4">
+            <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary py-2 px-4 rounded-pill">
+                Xem tất cả tài khoản <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</div>
+<!-- Featured Accounts End -->
 
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.home-product-carousel').owlCarousel({
+                autoplay: true,
+                smartSpeed: 1000,
+                margin: 20,
+                dots: false,
+                loop: true,
+                nav: true,
+                navText: [
+                    '<i class="fa fa-angle-left" aria-hidden="true"></i>',
+                    '<i class="fa fa-angle-right" aria-hidden="true"></i>'
+                ],
+                responsive: {
+                    0: { items: 1 },
+                    576: { items: 2 },
+                    768: { items: 3 },
+                    992: { items: 4 }
+                }
+            });
+
+            // Handle hover effect on product image overlay
+            $('.product-card').hover(
+                function() { $(this).find('.product-overlay').css('opacity', '1'); },
+                function() { $(this).find('.product-overlay').css('opacity', '0'); }
+            );
+        });
+    </script>
+}

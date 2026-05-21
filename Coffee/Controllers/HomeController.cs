@@ -17,7 +17,19 @@ namespace Coffee.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var products = _db.Products
+                .OrderByDescending(p => p.ProductId)
+                .Select(p => new Coffee.DTO.ProductDTO
+                {
+                    Id = p.ProductId,
+                    ProductName = p.ProductName ?? string.Empty,
+                    Price = p.Price,
+                    Description = p.Description ?? string.Empty,
+                    ImageUrl = p.ImageUrl ?? string.Empty,
+                    IsSold = p.IsSold
+                })
+                .ToList();
+            return View(products);
         }
 
         public IActionResult Privacy()
