@@ -7,11 +7,23 @@
 
 body {
     background-color: var(--dark) !important;
-    background-image: url('../img/bg.png') !important;
-    background-size: cover !important;
-    background-position: center !important;
-    background-attachment: fixed !important;
     color: var(--light) !important;
+    overflow-x: hidden;
+}
+
+#bg-3d {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../img/phoenix_bg.png');
+    background-size: cover;
+    background-position: center;
+    z-index: -999;
+    transition: transform 0.1s ease-out;
+    transform-origin: center center;
+    will-change: transform;
 }
 
 .coffee-navbar {

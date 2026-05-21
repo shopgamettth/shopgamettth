@@ -31,6 +31,7 @@
     @RenderSection("Css", required: false)
 </head>
 <body class="coffee-shell coffee-shell-home">
+    <div id="bg-3d"></div>
     <partial name="~/Views/Shared/_Header.cshtml" />
 
     @if (showHomeHero)
@@ -60,6 +61,19 @@
     <script src="~/js/site-cart-count.js" asp-append-version="true"></script>
     <script src="~/js/Products/Products.js" asp-append-version="true"></script>
     <script src="~/js/toast/toast.js"></script>
+
+    <script>
+        // 3D Parallax Effect for Phoenix Background
+        $(window).scroll(function() {
+            var scrollPos = $(this).scrollTop();
+            // Scale and TranslateZ effect to simulate flying in/out
+            var scale = 1 + (scrollPos * 0.0005);
+            var rotateX = scrollPos * 0.01;
+            $('#bg-3d').css({
+                'transform': 'scale(' + scale + ') translate3d(0, ' + (scrollPos * 0.1) + 'px, 0) rotateX(' + rotateX + 'deg)'
+            });
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
