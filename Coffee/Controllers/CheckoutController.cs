@@ -125,6 +125,7 @@ namespace Coffee.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
+            ModelState.Clear();
             TryValidateModel(checkoutModel);
             if (!ModelState.IsValid)
             {
