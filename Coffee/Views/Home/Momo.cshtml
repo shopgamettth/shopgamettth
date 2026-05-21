@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Nạp MoMo";
+    ViewData["Title"] = "Nạp Chuyển Khoản";
     Layout = "_ProductsCoffee";
 }
 
@@ -7,29 +7,55 @@
     <div class="container">
         <div class="text-center mb-5">
             <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">Nạp Tiền</h4>
-            <h1 class="display-4 text-white">Nạp Qua Ví MoMo</h1>
+            <h1 class="display-4 text-white">Nạp Qua Chuyển Khoản</h1>
         </div>
         <div class="row">
-            <div class="col-lg-6 mx-auto mb-5 text-center">
-                <div class="p-5 bg-dark border border-secondary rounded shadow-sm">
+            <!-- MoMo Column -->
+            <div class="col-lg-6 mb-5 text-center">
+                <div class="p-5 bg-dark border border-secondary rounded shadow-sm h-100">
                     <h3 class="mb-4 text-white">Quét Mã QR MoMo</h3>
-                    <p class="text-light mb-4">Vui lòng quét mã QR bên dưới bằng ứng dụng MoMo hoặc ứng dụng ngân hàng có hỗ trợ mã VietQR.</p>
+                    <p class="text-light mb-4">Vui lòng quét mã QR bên dưới bằng ứng dụng MoMo.</p>
                     
                     <div class="bg-white p-3 rounded d-inline-block shadow">
                         <img src="~/img/momo_qr.png" alt="Momo QR Code" class="img-fluid" style="max-width: 300px; border-radius: 10px;" />
                     </div>
 
-                    <div class="mt-4 p-3 border border-secondary rounded text-left bg-transparent text-light">
+                    <div class="mt-4 p-3 border border-secondary rounded text-left bg-transparent text-light text-center">
                         <h5>Thông Tin Nhận Tiền:</h5>
-                        <p class="mb-1"><strong>Số Điện Thoại / Momo:</strong> 0989767704</p>
+                        <p class="mb-1"><strong>Số Điện Thoại MoMo:</strong> 0989767704</p>
                         <p class="mb-1"><strong>Tên Chủ Tài Khoản:</strong> TRINH THE THANH HAI</p>
-                        <p class="mb-0 text-warning"><strong>Nội Dung Chuyển Tiền:</strong> MUA ACC @(User?.Identity?.Name ?? "USERNAME")</p>
-                    </div>
-
-                    <div class="mt-4">
-                        <button class="btn btn-primary py-2 px-4" onclick="alert('Đã nhận yêu cầu! Hệ thống sẽ kiểm tra và cộng tiền tự động. Nếu sau 5 phút chưa nhận được tiền, vui lòng liên hệ Admin qua Zalo để được hỗ trợ.')">Đã Chuyển Tiền</button>
+                        <div class="p-2 mt-2 bg-secondary rounded text-white" style="font-size: 1.1em; border: 2px dashed #ffc107;">
+                            <strong>Nội Dung:</strong> <span class="text-warning font-weight-bold">MUA ACC @ViewBag.RandomCode</span>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- VCB Column -->
+            <div class="col-lg-6 mb-5 text-center">
+                <div class="p-5 bg-dark border border-secondary rounded shadow-sm h-100">
+                    <h3 class="mb-4 text-white">Quét Mã QR Vietcombank</h3>
+                    <p class="text-light mb-4">Vui lòng quét mã VietQR bên dưới bằng ứng dụng Ngân Hàng.</p>
+                    
+                    <div class="bg-white p-3 rounded d-inline-block shadow">
+                        <img src="https://img.vietqr.io/image/vcb-7989767704-compact2.jpg?amount=0&addInfo=MUA%20ACC%20@ViewBag.RandomCode&accountName=TRINH%20THE%20THANH%20HAI" alt="VCB QR Code" class="img-fluid" style="max-width: 300px; border-radius: 10px;" />
+                    </div>
+
+                    <div class="mt-4 p-3 border border-secondary rounded text-left bg-transparent text-light text-center">
+                        <h5>Thông Tin Nhận Tiền:</h5>
+                        <p class="mb-1"><strong>Ngân hàng:</strong> Vietcombank (VCB)</p>
+                        <p class="mb-1"><strong>Số Tài Khoản:</strong> 7989767704</p>
+                        <p class="mb-1"><strong>Tên Chủ Tài Khoản:</strong> TRINH THE THANH HAI</p>
+                        <div class="p-2 mt-2 bg-secondary rounded text-white" style="font-size: 1.1em; border: 2px dashed #ffc107;">
+                            <strong>Nội Dung:</strong> <span class="text-warning font-weight-bold">MUA ACC @ViewBag.RandomCode</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center mt-3">
+                <button class="btn btn-primary py-3 px-5 btn-lg shadow" onclick="alert('Đã nhận yêu cầu! Hệ thống sẽ kiểm tra và cộng tiền tự động. Nếu sau 5 phút chưa nhận được tiền, vui lòng liên hệ Admin qua Zalo để được hỗ trợ.')">Đã Chuyển Tiền</button>
             </div>
         </div>
     </div>

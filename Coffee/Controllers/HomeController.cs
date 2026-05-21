@@ -27,7 +27,14 @@ namespace Coffee.Controllers
 
         public IActionResult Service() => View();
 
-        public IActionResult Momo() => View();
+        public IActionResult Momo()
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var randomCode = new string(Enumerable.Repeat(chars, 6).Select(s => s[random.Next(s.Length)]).ToArray());
+            ViewBag.RandomCode = randomCode;
+            return View();
+        }
 
         public IActionResult Contact() => View();
 

@@ -1,0 +1,139 @@
+@model IEnumerable<Coffee.Models.CardCharge>
+
+@{
+    ViewData["Title"] = "Duyệt Thẻ TSR";
+    Layout = "_ProductsCoffee";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Admin/admin-dashboard.css" />
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">Danh Sách Nạp Thẻ TSR</h6>
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fa fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fa fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <div class="table-responsive">
+                    <table class="table table-hover text-white">
+                        <thead>
+                            <tr>
+                                <th scope="col">Ngày tạo</th>
+                                <th scope="col">Tài khoản</th>
+                                <th scope="col">Loại / Mệnh giá</th>
+                                <th scope="col">Mã / Seri</th>
+                                <th scope="col">Trạng thái</th>
+                                <th scope="col">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@(item.User?.UserName ?? "N/A")</td>
+                                    <td>
+                                        <span class="badge bg-info">@item.Telco</span><br/>
+                                        <strong class="text-warning">@item.DeclaredValue.ToString("N0")đ</strong>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted d-block">Mã: @item.Code</small>
+                                        <small class="text-muted d-block">Seri: @item.Serial</small>
+                                    </td>
+                                    <td>
+                                        @if (item.Status == 99)
+                                        {
+                                            <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                                        }
+                                        else if (item.Status == 1)
+                                        {
+                                            <span class="badge bg-success">Thành công</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Thất bại / Lỗi</span>
+                                            @if (!string.IsNullOrEmpty(item.Message))
+                                            {
+                                                <small class="d-block text-danger mt-1">@item.Message</small>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.Status == 99)
+                                        {
+                                            <div class="d-flex gap-2">
+                                                <form asp-action="Approve" method="post" style="display:inline;">
+                                                    <input type="hidden" name="id" value="@item.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Bạn có chắc chắn muốn DUYỆT thẻ này và cộng tiền cho người dùng?')">
+                                                        <i class="fa fa-check"></i> Duyệt
+                                                    </button>
+                                                </form>
+
+                                                <button type="button" class="btn btn-sm btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#rejectModal-@item.Id">
+                                                    <i class="fa fa-times"></i> Từ chối
+                                                </button>
+                                            </div>
+
+                                            <!-- Reject Modal -->
+                                            <div class="modal fade" id="rejectModal-@item.Id" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content bg-secondary">
+                                                        <form asp-action="Reject" method="post">
+                                                            <div class="modal-header border-0">
+                                                                <h5 class="modal-title">Từ chối thẻ</h5>
+                                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <input type="hidden" name="id" value="@item.Id" />
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Lý do từ chối (tuỳ chọn)</label>
+                                                                    <input type="text" name="reason" class="form-control bg-dark text-white" placeholder="Ví dụ: Thẻ sai seri, thẻ đã sử dụng..." />
+                                                                </div>
+                                                                <p class="text-warning small">Thẻ sẽ chuyển sang trạng thái lỗi và không cộng tiền.</p>
+                                                            </div>
+                                                            <div class="modal-footer border-0">
+                                                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Đóng</button>
+                                                                <button type="submit" class="btn btn-danger">Xác nhận từ chối</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Đã xử lý</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    
+                    @if (!Model.Any())
+                    {
+                        <div class="text-center py-4">
+                            <p class="text-muted">Chưa có giao dịch nạp thẻ nào.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
