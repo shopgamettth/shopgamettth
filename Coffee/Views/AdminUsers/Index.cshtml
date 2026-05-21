@@ -15,7 +15,7 @@
     <div class="card bg-dark text-white shadow mb-4">
         <div class="card-header bg-dark border-bottom border-secondary d-flex align-items-center">
             <h5 class="mb-0 mr-3">Danh sách</h5>
-            <input type="text" id="emailSearch" class="form-control bg-dark text-white border-secondary" placeholder="Tìm kiếm theo Email..." style="max-width: 300px;" onkeyup="filterUsers()" />
+            <input type="text" id="emailSearch" class="form-control bg-dark text-white border-secondary" placeholder="Tìm kiếm theo Email hoặc Mã ID..." style="max-width: 300px;" onkeyup="filterUsers()" />
         </div>
         <div class="card-body p-0">
             <div class="table-responsive" style="max-height: 380px; overflow-y: auto;">
@@ -25,6 +25,7 @@
                             <th>ID</th>
                             <th>Tên tài khoản</th>
                             <th>Email</th>
+                            <th>Mã ID</th>
                             <th>Số Dư (VNĐ)</th>
                             <th>Ngày tham gia</th>
                             <th>Hành Động</th>
@@ -37,6 +38,7 @@
                                 <td>@u.UserId</td>
                                 <td>@u.UserName</td>
                                 <td class="user-email">@u.Email</td>
+                                <td class="user-transfercode text-info">@u.TransferCode</td>
                                 <td class="text-warning fw-bold">@((u.Balance ?? 0).ToString("N0"))</td>
                                 <td>@u.CreatedAt?.ToString("dd/MM/yyyy")</td>
                                 <td>
@@ -66,13 +68,24 @@
 
             for (let i = 0; i < rows.length; i++) {
                 const emailCell = rows[i].querySelector('.user-email');
+                const transferCodeCell = rows[i].querySelector('.user-transfercode');
+                
+                let match = false;
+                
                 if (emailCell) {
                     const email = emailCell.textContent || emailCell.innerText;
-                    if (email.toLowerCase().indexOf(filter) > -1) {
-                        rows[i].style.display = "";
-                    } else {
-                        rows[i].style.display = "none";
-                    }
+                    if (email.toLowerCase().indexOf(filter) > -1) match = true;
+                }
+                
+                if (transferCodeCell) {
+                    const transferCode = transferCodeCell.textContent || transferCodeCell.innerText;
+                    if (transferCode.toLowerCase().indexOf(filter) > -1) match = true;
+                }
+
+                if (match) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
                 }
             }
         }

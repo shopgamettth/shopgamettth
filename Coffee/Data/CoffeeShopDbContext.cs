@@ -158,7 +158,10 @@ public partial class CoffeeShopDbContext : DbContext
 
             entity.HasIndex(e => e.UserName, "UQ_Users_UserName").IsUnique();
 
+            entity.HasIndex(e => e.TransferCode, "UQ_Users_TransferCode").IsUnique();
+
             entity.Property(e => e.Address).HasMaxLength(200);
+            entity.Property(e => e.TransferCode).HasMaxLength(50);
             entity.Property(e => e.Balance).HasColumnType("decimal(18, 2)").HasDefaultValue(0m);
             var createdAtProperty = entity.Property(e => e.CreatedAt);
             if (isSqlServer)

@@ -15,6 +15,11 @@
         <label class="form-label">Email</label>
         <input asp-for="Email" class="form-control mb-3" readonly />
 
+        <label class="form-label">Mã ID nạp tiền (Transfer Code)</label>
+        <input asp-for="TransferCode" class="form-control mb-1" placeholder="Nhập mã ID" />
+        <span asp-validation-for="TransferCode" class="text-danger"></span>
+        <small class="text-muted d-block mb-3">Mã này dùng làm nội dung chuyển khoản. Phải là duy nhất và không được trùng với người khác.</small>
+
         <label class="form-label">So dien thoai</label>
         <input asp-for="Phone" class="form-control mb-1" placeholder="Nhap so dien thoai nhan hang" />
         <span asp-validation-for="Phone" class="text-danger"></span>

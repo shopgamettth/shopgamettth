@@ -7,10 +7,12 @@ namespace Coffee.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly Coffee.Data.CoffeeShopDbContext _db;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, Coffee.Data.CoffeeShopDbContext db)
         {
             _logger = logger;
+            _db = db;
         }
 
         public IActionResult Index()
@@ -27,12 +29,16 @@ namespace Coffee.Controllers
 
         public IActionResult Service() => View();
 
+        [Microsoft.AspNetCore.Authorization.Authorize]
         public IActionResult Momo()
         {
-            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            var random = new Random();
-            var randomCode = new string(Enumerable.Repeat(chars, 6).Select(s => s[random.Next(s.Length)]).ToArray());
-            ViewBag.RandomCode = randomCode;
+            var userIdStr = User.FindFirst("UserId")?.Value;
+            if (string.IsNullOrEmpty(userIdStr)) return RedirectToAction("Login", "Auth");
+            
+            var user = _db.Users.FirstOrDefault(u => u.UserId.ToString() == userIdStr);
+            if (user == null) return RedirectToAction("Login", "Auth");
+
+            ViewBag.TransferCode = user.TransferCode;
             return View();
         }
 

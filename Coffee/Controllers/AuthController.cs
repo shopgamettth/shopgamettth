@@ -1,4 +1,4 @@
-﻿using Coffee.Data;
+using Coffee.Data;
 using Coffee.DTO;
 using Coffee.Helper;
 using Coffee.Models;
@@ -63,7 +63,8 @@ namespace Coffee.Controllers
                     RoleId = 2,
                     IsActive = true,
                     IsLocked = false,
-                    CreatedAt = AppTimeHelper.UtcNow
+                    CreatedAt = AppTimeHelper.UtcNow,
+                    TransferCode = GenerateUniqueTransferCode()
                 };
                 
                 // hash password
@@ -139,6 +140,14 @@ namespace Coffee.Controllers
                     ExpiresUtc = AppTimeHelper.UtcNow.AddMinutes(10) // ⏱ 10 phút
                 }
             );
+            
+            // 🔥 Tự động tạo TransferCode nếu user cũ chưa có
+            if (string.IsNullOrEmpty(user.TransferCode))
+            {
+                user.TransferCode = GenerateUniqueTransferCode();
+                db.Users.Update(user);
+                db.SaveChanges();
+            }
 
             return RedirectToAction("Index", "Products");
         }
@@ -300,7 +309,8 @@ namespace Coffee.Controllers
                 Username = user.UserName,
                 Email = user.Email,
                 Phone = user.Phone ?? string.Empty,
-                Address = user.Address ?? string.Empty
+                Address = user.Address ?? string.Empty,
+                TransferCode = user.TransferCode ?? string.Empty
             });
         }
 
@@ -322,6 +332,18 @@ namespace Coffee.Controllers
 
                 if (user == null)
                     return RedirectToAction("Login");
+
+                if (dto.TransferCode != user.TransferCode)
+                {
+                    if (db.Users.Any(u => u.TransferCode == dto.TransferCode && u.UserId != user.UserId))
+                    {
+                        ModelState.AddModelError("TransferCode", "Mã ID này đã được người khác sử dụng, vui lòng chọn mã khác!");
+                        dto.Username = user.UserName;
+                        dto.Email = user.Email;
+                        return View(dto);
+                    }
+                    user.TransferCode = dto.TransferCode.Trim();
+                }
 
                 user.Phone = dto.Phone.Trim();
                 user.Address = dto.Address.Trim();
@@ -363,6 +385,22 @@ namespace Coffee.Controllers
         private static string HashResetCode(string code)
         {
             return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(code.Trim())));
+        }
+
+        private string GenerateUniqueTransferCode()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            while (true)
+            {
+                var code = new string(Enumerable.Repeat(chars, 6)
+                    .Select(s => s[random.Next(s.Length)]).ToArray());
+                
+                if (!db.Users.Any(u => u.TransferCode == code))
+                {
+                    return code;
+                }
+            }
         }
     }
 }
