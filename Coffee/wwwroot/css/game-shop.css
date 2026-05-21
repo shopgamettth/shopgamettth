@@ -26,6 +26,41 @@ body {
     will-change: transform;
 }
 
+.overlay-top::before, .overlay-bottom::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 150px !important; 
+    background: url('../img/lava_texture.png') !important;
+    background-size: 500px 500px !important;
+    z-index: 10 !important;
+    animation: flowLava3D 4s linear infinite !important;
+    opacity: 0.9;
+    box-shadow: 0 0 30px 15px rgba(255, 69, 0, 0.5);
+    pointer-events: none;
+}
+
+/* Bottom edge of Hero section - looks like a floor stretching out */
+.overlay-bottom::after {
+    top: 100% !important;
+    bottom: auto !important;
+    transform: perspective(300px) rotateX(60deg);
+    transform-origin: top center;
+    border-bottom: none !important;
+    border-top: 2px solid #ff4500;
+}
+
+/* Top edge of Footer - looks like a ceiling stretching out */
+.overlay-top::before {
+    bottom: 100% !important;
+    top: auto !important;
+    transform: perspective(300px) rotateX(-60deg);
+    transform-origin: bottom center;
+    border-top: none !important;
+    border-bottom: 2px solid #ff4500;
+}
+
 .coffee-navbar {
     background: linear-gradient(135deg, #1f1f1f, #2d2d2d) !important;
     border-bottom: 2px solid var(--secondary) !important;
@@ -219,4 +254,13 @@ h1, h2, h3, h4, h5, h6 {
     background-color: #1e1e1e !important;
     color: #555 !important;
     cursor: not-allowed;
+}
+
+@keyframes flowLava3D {
+    0% {
+        background-position: 0px 0px;
+    }
+    100% {
+        background-position: 0px 500px;
+    }
 }
