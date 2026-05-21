@@ -127,6 +127,21 @@ h1, h2, h3, h4, h5, h6 {
     text-shadow: 2px 2px 10px rgba(255, 0, 0, 0.3);
 }
 
+
+.game-title-hot {
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 2rem 0;
+    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    background-size: 400%;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: glowing-text 10s linear infinite;
+    text-shadow: 2px 2px 10px rgba(255, 0, 0, 0.3);
+}
+
 @keyframes glowing-text {
     0% { background-position: 0 0; }
     50% { background-position: 400% 0; }
@@ -135,4 +150,57 @@ h1, h2, h3, h4, h5, h6 {
 
 .text-dark {
     color: #fff !important;
+}
+
+/* ========================================= */
+/* BEAUTIFUL SCROLLBAR STYLES                */
+/* ========================================= */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #1e1e1e;
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 5px;
+    border: 2px solid #1e1e1e;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+::-webkit-scrollbar-corner {
+    background: #1e1e1e;
+}
+
+/* ========================================= */
+/* PAGINATION STYLES                         */
+/* ========================================= */
+.pagination {
+    margin-bottom: 0;
+}
+.page-link {
+    background-color: #2c2c2c !important;
+    border-color: #444 !important;
+    color: #aaa !important;
+    padding: 0.75rem 1.25rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+.page-link:hover {
+    background-color: #3d3d3d !important;
+    color: var(--primary) !important;
+}
+.page-item.active .page-link {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #000 !important;
+    box-shadow: 0 0 10px rgba(240, 193, 75, 0.4);
+}
+.page-item.disabled .page-link {
+    background-color: #1e1e1e !important;
+    color: #555 !important;
+    cursor: not-allowed;
 }

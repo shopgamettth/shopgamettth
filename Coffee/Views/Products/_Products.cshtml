@@ -8,6 +8,26 @@
         <p class="text-muted">Chọn ngay một nick xịn xò để chiến thôi nào</p>
     </div>
 
+    <!-- SORTING & FILTER BAR -->
+    <div class="d-flex justify-content-end mb-4">
+        <form method="get" action="@Url.Action(ViewContext.RouteData.Values["action"].ToString())" class="d-flex align-items-center" id="sortForm">
+            @if (ViewBag.Query != null)
+            {
+                <input type="hidden" name="query" value="@ViewBag.Query" />
+            }
+            @if (ViewBag.Loai != null)
+            {
+                <input type="hidden" name="loai" value="@ViewBag.Loai" />
+            }
+            <label class="text-light me-2 fw-bold text-nowrap" style="margin-right: 10px;">Sắp xếp theo:</label>
+            <select name="sortOrder" class="form-select bg-dark text-white border-secondary" style="width: 200px;" onchange="document.getElementById('sortForm').submit();">
+                <option value="">Nổi bật nhất (Hot)</option>
+                <option value="price_asc" selected="@(ViewBag.SortOrder == "price_asc")">Giá: Thấp đến Cao</option>
+                <option value="price_desc" selected="@(ViewBag.SortOrder == "price_desc")">Giá: Cao đến Thấp</option>
+            </select>
+        </form>
+    </div>
+
     <!-- GRID -->
     <div class="row g-4 products-grid">
 
@@ -122,9 +142,11 @@
                 <!-- PREV -->
                 <li class="page-item @(current == 1 ? "disabled" : "")">
                     <a class="page-link"
-                       asp-action="Index"
+                       asp-action="@ViewContext.RouteData.Values["action"]"
                        asp-route-page="@(current - 1)"
-                       asp-route-loai="@ViewBag.Loai">
+                       asp-route-loai="@ViewBag.Loai"
+                       asp-route-query="@ViewBag.Query"
+                       asp-route-sortOrder="@ViewBag.SortOrder">
                         «
                     </a>
                 </li>
@@ -134,9 +156,11 @@
                 {
                     <li class="page-item @(i == current ? "active" : "")">
                         <a class="page-link"
-                           asp-action="Index"
+                           asp-action="@ViewContext.RouteData.Values["action"]"
                            asp-route-page="@i"
-                           asp-route-loai="@ViewBag.Loai">
+                           asp-route-loai="@ViewBag.Loai"
+                           asp-route-query="@ViewBag.Query"
+                           asp-route-sortOrder="@ViewBag.SortOrder">
                             @i
                         </a>
                     </li>
@@ -145,9 +169,11 @@
                 <!-- NEXT -->
                 <li class="page-item @(current == total ? "disabled" : "")">
                     <a class="page-link"
-                       asp-action="Index"
+                       asp-action="@ViewContext.RouteData.Values["action"]"
                        asp-route-page="@(current + 1)"
-                       asp-route-loai="@ViewBag.Loai">
+                       asp-route-loai="@ViewBag.Loai"
+                       asp-route-query="@ViewBag.Query"
+                       asp-route-sortOrder="@ViewBag.SortOrder">
                         »
                     </a>
                 </li>

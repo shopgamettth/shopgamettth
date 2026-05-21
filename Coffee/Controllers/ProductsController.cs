@@ -18,7 +18,7 @@ namespace Coffee.Controllers
         // =========================
         // 📦 PRODUCT LIST + FILTER + PAGINATION
         // =========================
-        public async Task<IActionResult> Index(int page = 1, int? loai = null)
+        public async Task<IActionResult> Index(int page = 1, int? loai = null, string? sortOrder = null)
         {
             int pageSize = 8;
             var productSales = SalesAnalyticsHelper.GetSuccessfulProductSales(db);
@@ -35,7 +35,7 @@ namespace Coffee.Controllers
 
             var totalItems = await query.CountAsync();
 
-            var products = (await query
+            var resultProducts = await query
                 .Select(p => new ProductDTO
                 {
                     Id = p.ProductId,
@@ -46,12 +46,26 @@ namespace Coffee.Controllers
                     IsSold = p.IsSold,
                     ExtraImageUrls = string.IsNullOrEmpty(p.ExtraImages) ? new List<string>() : p.ExtraImages.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList()
                 })
-                .ToListAsync())
-                .OrderByDescending(product =>
+                .ToListAsync();
+
+            if (sortOrder == "price_asc")
+            {
+                resultProducts = resultProducts.OrderBy(p => p.Price).ThenByDescending(p => p.Id).ToList();
+            }
+            else if (sortOrder == "price_desc")
+            {
+                resultProducts = resultProducts.OrderByDescending(p => p.Price).ThenByDescending(p => p.Id).ToList();
+            }
+            else
+            {
+                resultProducts = resultProducts.OrderByDescending(product =>
                     productSales.TryGetValue(product.Id, out var sales) ? sales.QuantitySold : 0)
                 .ThenByDescending(product =>
                     productSales.TryGetValue(product.Id, out var sales) ? sales.Revenue : 0)
-                .ThenByDescending(product => product.Id)
+                .ThenByDescending(product => product.Id).ToList();
+            }
+
+            var products = resultProducts
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -59,6 +73,7 @@ namespace Coffee.Controllers
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
             ViewBag.Loai = loai;
+            ViewBag.SortOrder = sortOrder;
 
             return View(products);
         }
@@ -66,7 +81,7 @@ namespace Coffee.Controllers
         // =========================
         // 🔍 SEARCH + PAGINATION
         // =========================
-        public async Task<IActionResult> Search(string? query, int page = 1)
+        public async Task<IActionResult> Search(string? query, int page = 1, string? sortOrder = null)
         {
             int pageSize = 8;
             var productSales = SalesAnalyticsHelper.GetSuccessfulProductSales(db);
@@ -85,7 +100,7 @@ namespace Coffee.Controllers
 
             var totalItems = await productsQuery.CountAsync();
 
-            var result = (await productsQuery
+            var resultProducts = await productsQuery
                 .Select(p => new ProductDTO
                 {
                     Id = p.ProductId,
@@ -96,12 +111,26 @@ namespace Coffee.Controllers
                     IsSold = p.IsSold,
                     ExtraImageUrls = string.IsNullOrEmpty(p.ExtraImages) ? new List<string>() : p.ExtraImages.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList()
                 })
-                .ToListAsync())
-                .OrderByDescending(product =>
+                .ToListAsync();
+
+            if (sortOrder == "price_asc")
+            {
+                resultProducts = resultProducts.OrderBy(p => p.Price).ThenByDescending(p => p.Id).ToList();
+            }
+            else if (sortOrder == "price_desc")
+            {
+                resultProducts = resultProducts.OrderByDescending(p => p.Price).ThenByDescending(p => p.Id).ToList();
+            }
+            else
+            {
+                resultProducts = resultProducts.OrderByDescending(product =>
                     productSales.TryGetValue(product.Id, out var sales) ? sales.QuantitySold : 0)
                 .ThenByDescending(product =>
                     productSales.TryGetValue(product.Id, out var sales) ? sales.Revenue : 0)
-                .ThenByDescending(product => product.Id)
+                .ThenByDescending(product => product.Id).ToList();
+            }
+
+            var result = resultProducts
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -109,6 +138,7 @@ namespace Coffee.Controllers
             ViewBag.Query = query;
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            ViewBag.SortOrder = sortOrder;
 
             return View(result);
         }
