@@ -32,6 +32,12 @@ html {
     will-change: transform;
 }
 
+#main-content {
+    min-height: calc(100vh - 200px);
+    position: relative;
+    z-index: 20; /* Ensure content stays above the lava overlay */
+}
+
 .overlay-top::before, .overlay-bottom::after {
     content: "";
     position: absolute;
