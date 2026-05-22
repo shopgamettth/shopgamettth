@@ -9,13 +9,19 @@ body {
     background-color: var(--dark) !important;
     color: var(--light) !important;
     overflow-x: hidden;
+    max-width: 100vw;
+}
+
+html {
+    overflow-x: hidden;
+    max-width: 100vw;
 }
 
 #bg-3d {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     background-image: url('../img/phoenix_bg.png');
     background-size: cover;
@@ -262,5 +268,29 @@ h1, h2, h3, h4, h5, h6 {
     }
     100% {
         background-position: 0px 500px;
+    }
+}
+
+/* ========================================= */
+/* MOBILE RESPONSIVE FIXES                   */
+/* ========================================= */
+@media (max-width: 768px) {
+    .display-1 {
+        font-size: 3rem !important;
+    }
+    .coffee-hero-kicker {
+        font-size: 1rem !important;
+    }
+    h2.font-weight-medium {
+        font-size: 1.5rem !important;
+    }
+    .coffee-brand-copy {
+        display: none !important; /* Hide brand text on mobile if it's too wide */
+    }
+    .coffee-navbar-shell {
+        justify-content: space-between;
+    }
+    .coffee-brand-mark {
+        margin-right: 0;
     }
 }
