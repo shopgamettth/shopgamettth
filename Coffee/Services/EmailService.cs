@@ -1,5 +1,7 @@
 using System.Net;
-using System.Net.Mail;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
 using Microsoft.Extensions.Options;
 
 namespace Coffee.Services
@@ -17,12 +19,14 @@ namespace Coffee.Services
         {
             EnsureConfigured();
 
-            using var message = new MailMessage
+            var email = new MimeMessage();
+            email.From.Add(new MailboxAddress(settings.SenderName, settings.SenderEmail));
+            email.To.Add(MailboxAddress.Parse(toEmail));
+            email.Subject = "Coffee Shop - Ma xac nhan dat lai mat khau";
+
+            var builder = new BodyBuilder
             {
-                From = new MailAddress(settings.SenderEmail, settings.SenderName),
-                Subject = "Coffee Shop - Ma xac nhan dat lai mat khau",
-                IsBodyHtml = true,
-                Body = $@"
+                HtmlBody = $@"
 <div style='font-family:Arial,sans-serif;line-height:1.6;color:#2d1f19'>
     <h2 style='margin-bottom:8px'>Xin chao {WebUtility.HtmlEncode(recipientName)},</h2>
     <p>Ban vua yeu cau dat lai mat khau cho tai khoan Coffee Shop.</p>
@@ -35,15 +39,21 @@ namespace Coffee.Services
 </div>"
             };
 
-            message.To.Add(new MailAddress(toEmail));
+            email.Body = builder.ToMessageBody();
 
-            using var smtp = new SmtpClient(settings.SmtpHost, settings.Port)
-            {
-                Credentials = new NetworkCredential(settings.Username, settings.Password),
-                EnableSsl = settings.EnableSsl
-            };
-
-            await smtp.SendMailAsync(message);
+            using var smtp = new SmtpClient();
+            
+            // Connect
+            await smtp.ConnectAsync(settings.SmtpHost, settings.Port, settings.EnableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.Auto);
+            
+            // Authenticate
+            await smtp.AuthenticateAsync(settings.Username, settings.Password);
+            
+            // Send
+            await smtp.SendAsync(email);
+            
+            // Disconnect
+            await smtp.DisconnectAsync(true);
         }
 
         private void EnsureConfigured()
