@@ -39,10 +39,6 @@
     </style>
 }
 
-<!-- About Start -->
-@await Html.PartialAsync("_About")
-<!-- About End -->
-
 <!-- Featured Accounts Start -->
 <div class="container-fluid pt-5 pb-3">
     <div class="container">
@@ -94,6 +90,10 @@
     </div>
 </div>
 <!-- Featured Accounts End -->
+
+<!-- About Start -->
+@await Html.PartialAsync("_About")
+<!-- About End -->
 
 @section Scripts {
     <script>
