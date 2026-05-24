@@ -23,7 +23,7 @@ body.coffee-shell {
 .coffee-topbar {
   position: fixed;
   inset: 0 0 auto 0;
-  z-index: 1200;
+  z-index: 1030;
   background: var(--coffee-header-bg);
   backdrop-filter: blur(18px);
   border-bottom: 1px solid var(--coffee-header-border);
