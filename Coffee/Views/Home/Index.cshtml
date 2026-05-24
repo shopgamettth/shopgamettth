@@ -95,9 +95,40 @@
 @await Html.PartialAsync("_About")
 <!-- About End -->
 
+<!-- Promotion Modal -->
+<div class="modal fade" id="promoModal" tabindex="-1" role="dialog" aria-labelledby="promoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="background: rgba(30, 30, 30, 0.95); border: 2px solid var(--primary); border-radius: 15px; box-shadow: 0 0 20px rgba(240, 193, 75, 0.5);">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title text-primary font-weight-bold" id="promoModalLabel" style="font-size: 1.5rem; text-shadow: 0 0 10px rgba(240, 193, 75, 0.5);">🔥 SIÊU KHUYẾN MÃI 🔥</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="text-shadow: none; opacity: 1;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center pt-2 pb-4">
+                <img src="~/img/banner-ff.png" alt="Promo" class="img-fluid rounded mb-3" style="max-height: 150px; object-fit: cover; width: 100%; border: 1px solid #444;" />
+                <h4 class="text-white mb-3">Siêu Hot: Giảm giá các nick game lên đến <span class="text-primary" style="font-size: 2rem; font-weight: bold;">30%</span>!</h4>
+                <p class="text-light mb-0">🎉 Tăng giá trị nạp kim cương, quân huy từ ngày <strong>25/05 đến 30/05</strong>. Nhanh tay chớp lấy cơ hội ngàn vàng này!</p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-primary rounded-pill px-5 py-2 font-weight-bold" data-dismiss="modal" style="box-shadow: 0 0 15px rgba(240, 193, 75, 0.5);">Tuyệt Vời!</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Promotion Modal End -->
+
 @section Scripts {
     <script>
         $(document).ready(function () {
+            // Show promotion modal on load
+            if (!sessionStorage.getItem('promoShown')) {
+                setTimeout(function() {
+                    $('#promoModal').modal('show');
+                    sessionStorage.setItem('promoShown', 'true');
+                }, 1000);
+            }
+
             $('.home-product-carousel').owlCarousel({
                 autoplay: true,
                 smartSpeed: 1000,
