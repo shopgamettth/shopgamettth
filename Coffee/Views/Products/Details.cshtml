@@ -146,6 +146,7 @@
 
         function openLightbox() {
             let overlay = document.getElementById('lightboxOverlay');
+            document.body.appendChild(overlay);
             let lbImg = document.getElementById('lightboxImage');
             lbImg.src = document.getElementById('mainImage').src;
             overlay.style.display = 'flex';

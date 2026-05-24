@@ -124,7 +124,7 @@
             // Show promotion modal on load
             if (!sessionStorage.getItem('promoShown')) {
                 setTimeout(function() {
-                    $('#promoModal').modal('show');
+                    $('#promoModal').appendTo('body').modal('show');
                     sessionStorage.setItem('promoShown', 'true');
                 }, 1000);
             }
