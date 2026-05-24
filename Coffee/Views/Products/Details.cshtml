@@ -24,10 +24,10 @@
                         <img id="mainImage" src="@productImage" alt="@Model.ProductName" style="width:100%; object-fit:cover; border-radius: 8px; cursor: zoom-in;" onclick="openLightbox()" />
                     </div>
                     @if(Model.ExtraImageUrls != null && Model.ExtraImageUrls.Any()) {
-                        <div class="d-flex mt-3" style="overflow-x:auto; gap:10px; padding-bottom:10px;" id="thumbnailContainer">
-                            <img src="@productImage" class="thumbnail-img" style="width:80px; height:80px; min-width:80px; object-fit:cover; border-radius:8px; cursor:pointer; border:2px solid #00ff88;" onclick="changeMainImage(this)" />
+                        <div class="owl-carousel product-thumbnail-carousel mt-3" id="thumbnailContainer">
+                            <img src="@productImage" class="thumbnail-img" style="height:80px; width:80px; object-fit:cover; border-radius:8px; cursor:pointer; border:2px solid #00ff88;" onclick="changeMainImage(this)" />
                             @foreach(var img in Model.ExtraImageUrls) {
-                                <img src="@img" class="thumbnail-img" style="width:80px; height:80px; min-width:80px; object-fit:cover; border-radius:8px; cursor:pointer; border:2px solid transparent;" onclick="changeMainImage(this)" />
+                                <img src="@img" class="thumbnail-img" style="height:80px; width:80px; object-fit:cover; border-radius:8px; cursor:pointer; border:2px solid transparent;" onclick="changeMainImage(this)" />
                             }
                         </div>
                     }
@@ -132,6 +132,16 @@
             if(imageList.length === 1 && thumbs.length > 0) {
                 imageList = Array.from(thumbs).map(t => t.src);
             }
+
+            $('.product-thumbnail-carousel').owlCarousel({
+                margin: 10,
+                dots: false,
+                nav: false,
+                autoWidth: true,
+                mouseDrag: true,
+                touchDrag: true,
+                items: 5
+            });
         });
 
         function changeMainImage(element) {
