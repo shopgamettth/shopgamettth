@@ -22,6 +22,11 @@ namespace Coffee.Data
                     BEGIN
                         ALTER TABLE [Categories] ADD [ImagePublicId] NVARCHAR(200) NULL;
                     END;
+
+                    IF COL_LENGTH('Categories', 'DisplayOrder') IS NULL
+                    BEGIN
+                        ALTER TABLE [Categories] ADD [DisplayOrder] INT NOT NULL DEFAULT 0;
+                    END;
                     """);
 
                 return;
@@ -32,6 +37,7 @@ namespace Coffee.Data
                 await db.Database.ExecuteSqlRawAsync("""
                     ALTER TABLE "Categories" ADD COLUMN IF NOT EXISTS "ImageUrl" character varying(500);
                     ALTER TABLE "Categories" ADD COLUMN IF NOT EXISTS "ImagePublicId" character varying(200);
+                    ALTER TABLE "Categories" ADD COLUMN IF NOT EXISTS "DisplayOrder" integer NOT NULL DEFAULT 0;
                     """);
             }
         }

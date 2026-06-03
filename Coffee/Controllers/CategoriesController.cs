@@ -34,8 +34,8 @@ namespace Coffee.Controllers
         public async Task<IActionResult> Index()
         {
             var categories = await _context.Categories
-                .Include(x => x.Products)
-                .OrderBy(x => x.CategoryName)
+                .OrderBy(c => c.DisplayOrder)
+                .ThenBy(c => c.CategoryId)
                 .ToListAsync();
 
             return View(categories);
@@ -71,7 +71,7 @@ namespace Coffee.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,Description")] Category category, IFormFile? file)
+        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,Description,DisplayOrder")] Category category, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -117,7 +117,7 @@ namespace Coffee.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,Description")] Category category, IFormFile? file)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,Description,DisplayOrder")] Category category, IFormFile? file)
         {
             if (id != category.CategoryId)
             {

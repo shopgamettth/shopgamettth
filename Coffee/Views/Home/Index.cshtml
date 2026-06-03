@@ -36,6 +36,26 @@
             box-shadow: 0 5px 15px rgba(240, 193, 75, 0.3) !important;
             border-color: var(--primary) !important;
         }
+        
+        @keyframes text-pulse-glow {
+            0% {
+                text-shadow: 0 0 10px rgba(240, 193, 75, 0.5);
+                transform: scale(1);
+            }
+            50% {
+                text-shadow: 0 0 20px rgba(240, 193, 75, 1), 0 0 30px rgba(240, 193, 75, 0.8);
+                transform: scale(1.05);
+            }
+            100% {
+                text-shadow: 0 0 10px rgba(240, 193, 75, 0.5);
+                transform: scale(1);
+            }
+        }
+        
+        .animated-title {
+            animation: text-pulse-glow 1.5s infinite ease-in-out;
+            display: inline-block;
+        }
     </style>
 }
 
@@ -43,7 +63,7 @@
 <div class="container-fluid pt-5 pb-3">
     <div class="container">
         <div class="text-center mb-5">
-            <h1 class="text-primary mb-3" style="text-shadow: 0 0 10px rgba(240, 193, 75, 0.5);">🎮 TÀI KHOẢN HIỆN CÓ</h1>
+            <h1 class="text-primary mb-3 animated-title">🎮 TÀI KHOẢN HIỆN CÓ</h1>
             <p class="text-white">Chọn ngay một nick xịn xò để chiến thôi nào</p>
         </div>
         <div class="owl-carousel home-product-carousel">

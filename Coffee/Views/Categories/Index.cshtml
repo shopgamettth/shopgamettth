@@ -102,6 +102,7 @@
                         <tr>
                             <th>Category</th>
                             <th>Mo ta</th>
+                            <th>Thứ tự</th>
                             <th>So san pham</th>
                             <th class="text-right">Hanh dong</th>
                         </tr>
@@ -131,6 +132,9 @@
                                     <p class="admin-category-description @(string.IsNullOrWhiteSpace(item.Description) ? "is-empty" : null)">
                                         @description
                                     </p>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">@item.DisplayOrder</span>
                                 </td>
                                 <td>
                                     <span class="admin-category-count-badge @(productCount == 0 ? "is-empty" : null)">

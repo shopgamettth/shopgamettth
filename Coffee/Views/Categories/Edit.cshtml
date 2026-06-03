@@ -59,6 +59,12 @@
                 </div>
 
                 <div class="admin-category-field">
+                    <label asp-for="DisplayOrder" class="form-label">Thứ tự hiển thị</label>
+                    <input asp-for="DisplayOrder" class="form-control" type="number" />
+                    <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+                </div>
+
+                <div class="admin-category-field">
                     <label class="form-label">Ảnh đại diện (vuông)</label>
                     @if (!string.IsNullOrEmpty(Model.ImageUrl))
                     {
