@@ -84,6 +84,7 @@ internal class Program
         OrderStatusDataInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
         RoleDataInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
         GameItemSchemaInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
+        CategorySchemaInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
         TransferCodeSchemaInitializer.EnsureAsync(app.Services).GetAwaiter().GetResult();
 
         // =========================

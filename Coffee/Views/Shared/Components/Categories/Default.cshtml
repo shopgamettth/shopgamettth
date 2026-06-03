@@ -26,8 +26,18 @@
             <a asp-controller="Products"
                asp-action="Index"
                asp-route-loai="@c.Id"
-               class="category-btn @(isActive ? "active" : "")">
-                <i class="fas fa-gamepad me-2"></i> @c.Name
+               class="category-card @(isActive ? "active" : "")">
+                <div class="category-image-wrapper">
+                    @if (!string.IsNullOrEmpty(c.ImageUrl))
+                    {
+                        <img src="@c.ImageUrl" alt="@c.Name" />
+                    }
+                    else
+                    {
+                        <i class="fas fa-gamepad"></i>
+                    }
+                </div>
+                <span class="category-name">@c.Name</span>
             </a>
         }
     </div>
@@ -51,14 +61,83 @@
         border-radius: 10px;
     }
 
+    .category-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #1e2235;
+        padding: 15px;
+        border-radius: 12px;
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: all 0.3s ease;
+        min-width: 140px;
+    }
+
+    .category-card:hover {
+        background: #2a2e45;
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    .category-card.active {
+        background: linear-gradient(135deg, #ff0055 0%, #ff4d4f 100%);
+        border-color: #ff0055;
+        box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3);
+    }
+
+    .category-image-wrapper {
+        width: 100px;
+        height: 100px;
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.2);
+        margin-bottom: 10px;
+    }
+
+    .category-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .category-image-wrapper i {
+        font-size: 40px;
+        color: #a0a5ba;
+    }
+
+    .category-card.active .category-image-wrapper i {
+        color: #fff;
+    }
+
+    .category-name {
+        color: #a0a5ba;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 120px;
+    }
+
+    .category-card.active .category-name {
+        color: #fff;
+    }
+    
     .category-btn {
         display: flex;
         align-items: center;
+        justify-content: center;
+        height: 147px;
         white-space: nowrap;
         background: #1e2235;
         color: #a0a5ba;
         padding: 10px 20px;
-        border-radius: 20px;
+        border-radius: 12px;
         text-decoration: none;
         font-weight: 600;
         border: 1px solid rgba(255,255,255,0.05);
@@ -68,7 +147,7 @@
     .category-btn:hover {
         color: #fff;
         background: #2a2e45;
-        transform: translateY(-2px);
+        transform: translateY(-5px);
     }
 
     .category-btn.active {

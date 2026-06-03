@@ -1,4 +1,12 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Coffee.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,16 +15,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Coffee.Data;
 using Coffee.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Coffee.Controllers
 {
     public class CategoriesController : Controller
     {
         private readonly CoffeeShopDbContext _context;
+        private readonly Coffee.Services.CloudinaryService _cloudinary;
 
-        public CategoriesController(CoffeeShopDbContext context)
+        public CategoriesController(CoffeeShopDbContext context, Coffee.Services.CloudinaryService cloudinary)
         {
             _context = context;
+            _cloudinary = cloudinary;
         }
 
         // GET: Categories
@@ -60,10 +71,22 @@ namespace Coffee.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,Description")] Category category)
+        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,Description")] Category category, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
+                if (file != null && file.Length > 0)
+                {
+                    var upload = await _cloudinary.UploadImageAsync(file);
+                    category.ImageUrl = upload?.Url;
+                    category.ImagePublicId = upload?.PublicId;
+                }
+
+                if (string.IsNullOrEmpty(category.ImageUrl))
+                {
+                    category.ImageUrl = "/img/default.png";
+                }
+
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = "Da tao category moi thanh cong.";
@@ -94,17 +117,40 @@ namespace Coffee.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,Description")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,Description")] Category category, IFormFile? file)
         {
             if (id != category.CategoryId)
             {
                 return NotFound();
             }
 
+            var oldCategory = await _context.Categories
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.CategoryId == id);
+
+            if (oldCategory == null) return NotFound();
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if (file != null && file.Length > 0)
+                    {
+                        if (!string.IsNullOrWhiteSpace(oldCategory.ImagePublicId))
+                        {
+                            await _cloudinary.DeleteImageAsync(oldCategory.ImagePublicId);
+                        }
+
+                        var upload = await _cloudinary.UploadImageAsync(file);
+                        category.ImageUrl = upload?.Url;
+                        category.ImagePublicId = upload?.PublicId;
+                    }
+                    else
+                    {
+                        category.ImageUrl = oldCategory.ImageUrl;
+                        category.ImagePublicId = oldCategory.ImagePublicId;
+                    }
+
                     _context.Update(category);
                     await _context.SaveChangesAsync();
                     TempData["Success"] = "Da cap nhat category thanh cong.";
@@ -162,6 +208,11 @@ namespace Coffee.Controllers
 
             if (category != null)
             {
+                if (!string.IsNullOrWhiteSpace(category.ImagePublicId))
+                {
+                    await _cloudinary.DeleteImageAsync(category.ImagePublicId);
+                }
+
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = "Da xoa category thanh cong.";

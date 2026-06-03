@@ -39,7 +39,7 @@
                 </div>
             </div>
 
-            <form asp-action="Create" class="admin-category-form">
+            <form asp-action="Create" class="admin-category-form" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger admin-category-validation"></div>
 
                 <div class="admin-category-field">
@@ -55,6 +55,11 @@
                               rows="5"
                               placeholder="Mo ta muc dich, nhom mon hoac cach su dung category nay trong he thong."></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="admin-category-field">
+                    <label class="form-label">Ảnh đại diện (vuông)</label>
+                    <input type="file" name="file" class="form-control" accept="image/*" />
                 </div>
 
                 <div class="admin-category-form-actions">

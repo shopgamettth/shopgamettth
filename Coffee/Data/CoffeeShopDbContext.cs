@@ -68,6 +68,8 @@ public partial class CoffeeShopDbContext : DbContext
 
             entity.Property(e => e.CategoryName).HasMaxLength(100);
             entity.Property(e => e.Description).HasMaxLength(200);
+            entity.Property(e => e.ImageUrl).HasMaxLength(500);
+            entity.Property(e => e.ImagePublicId).HasMaxLength(200);
         });
 
         modelBuilder.Entity<Order>(entity =>

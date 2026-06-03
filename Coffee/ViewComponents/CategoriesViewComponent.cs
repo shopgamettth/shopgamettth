@@ -1,4 +1,4 @@
-﻿using Coffee.Data;
+using Coffee.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Coffee.ViewComponents
@@ -17,7 +17,8 @@ namespace Coffee.ViewComponents
                 {
                     Id = c.CategoryId,
                     Name = c.CategoryName ?? string.Empty,
-                    Description = c.Description ?? string.Empty
+                    Description = c.Description ?? string.Empty,
+                    ImageUrl = c.ImageUrl ?? string.Empty
                 }).ToList();
                 return View(categories);
 
