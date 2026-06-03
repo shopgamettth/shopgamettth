@@ -932,39 +932,4 @@ form[asp-action="Search"] {
     }
 }
 
-/* =========================
-   TEXT ANIMATION (GLOBAL)
-========================= */
-@keyframes text-pulse-glow {
-    0% {
-        color: #ffeb3b;
-        text-shadow: 0 0 10px #ffeb3b;
-        transform: scale(1);
-    }
-    25% {
-        color: #fff;
-        text-shadow: 0 0 20px #fff, 0 0 30px #00d2ff;
-        transform: scale(1.03);
-    }
-    50% {
-        color: #00d2ff;
-        text-shadow: 0 0 20px #00d2ff, 0 0 40px #00d2ff, 0 0 60px #00d2ff;
-        transform: scale(1.05);
-    }
-    75% {
-        color: #ff0055;
-        text-shadow: 0 0 20px #ff0055, 0 0 40px #ff0055;
-        transform: scale(1.03);
-    }
-    100% {
-        color: #ffeb3b;
-        text-shadow: 0 0 10px #ffeb3b;
-        transform: scale(1);
-    }
-}
 
-.animated-title {
-    animation: text-pulse-glow 1s infinite ease-in-out;
-    display: inline-block;
-    font-weight: 900 !important;
-}

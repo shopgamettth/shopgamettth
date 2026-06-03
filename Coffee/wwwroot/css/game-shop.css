@@ -176,41 +176,14 @@ h1, h2, h3, h4, h5, h6 {
     background-image: none !important;
 }
 
-@keyframes flash-glow {
-    0% {
-        color: #fff;
-        text-shadow: 0 0 10px #fff, 0 0 20px #00d2ff, 0 0 30px #00d2ff;
-        transform: scale(1);
-    }
-    25% {
-        color: #ffcc00;
-        text-shadow: 0 0 20px #ffcc00, 0 0 40px #ff0055, 0 0 60px #ff0055;
-        transform: scale(1.05);
-    }
-    50% {
-        color: #fff;
-        text-shadow: 0 0 20px #fff, 0 0 40px #00ffd5, 0 0 60px #00ffd5;
-        transform: scale(1.1);
-    }
-    75% {
-        color: #ff0055;
-        text-shadow: 0 0 20px #ff0055, 0 0 40px #ff0055, 0 0 60px #ffcc00;
-        transform: scale(1.05);
-    }
-    100% {
-        color: #fff;
-        text-shadow: 0 0 10px #fff, 0 0 20px #00d2ff, 0 0 30px #00d2ff;
-        transform: scale(1);
-    }
-}
-
 .game-title-hot {
     font-size: 2.5rem;
     font-weight: 900;
     text-transform: uppercase;
     text-align: center;
     margin: 2rem 0;
-    animation: flash-glow 1s infinite alternate ease-in-out;
+    color: #ffcc00;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 204, 0, 0.7);
 }
 
 .text-dark {
