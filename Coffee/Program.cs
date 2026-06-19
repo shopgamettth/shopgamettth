@@ -24,11 +24,18 @@ internal class Program
         // =========================
         builder.Services.AddControllersWithViews();
 
-        // DB
-        var myConnectionString = builder.Configuration.GetConnectionString("MyConnectString");
+        // DB - Hỗ trợ tự động chuyển đổi chuỗi postgres:// từ DATABASE_URL trên Render
+        var myConnectionString = Environment.GetEnvironmentVariable("DATABASE_URL") 
+            ?? builder.Configuration.GetConnectionString("MyConnectString");
+
         if (string.IsNullOrWhiteSpace(myConnectionString))
         {
-            throw new InvalidOperationException("Connection string 'MyConnectString' was not found.");
+            throw new InvalidOperationException("Connection string 'MyConnectString' or environment variable 'DATABASE_URL' was not found.");
+        }
+
+        if (myConnectionString.StartsWith("postgres://") || myConnectionString.StartsWith("postgresql://"))
+        {
+            myConnectionString = ParsePostgresConnectionString(myConnectionString);
         }
 
         builder.Services.AddDbContext<CoffeeShopDbContext>(options =>
@@ -113,5 +120,23 @@ internal class Program
 
         app.MapFallbackToController("NotFound", "Home");
         app.Run();
+    }
+
+    private static string ParsePostgresConnectionString(string databaseUrl)
+    {
+        databaseUrl = databaseUrl.Replace("postgres://", "").Replace("postgresql://", "");
+        var userPassSide = databaseUrl.Split('@')[0];
+        var hostDbSide = databaseUrl.Split('@')[1];
+
+        var user = userPassSide.Split(':')[0];
+        var password = userPassSide.Split(':')[1];
+
+        var hostPort = hostDbSide.Split('/')[0];
+        var database = hostDbSide.Split('/')[1].Split('?')[0]; // Loại bỏ query params nếu có
+
+        var host = hostPort.Split(':')[0];
+        var port = hostPort.Contains(":") ? hostPort.Split(':')[1] : "5432";
+
+        return $"Host={host};Port={port};Username={user};Password={password};Database={database};SSL Mode=Require;Trust Server Certificate=True;";
     }
 }
