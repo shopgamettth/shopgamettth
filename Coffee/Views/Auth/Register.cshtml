@@ -1,20 +1,20 @@
-﻿@model Coffee.DTO.RegisterDTO
+@model Coffee.DTO.RegisterDTO
 
 <div class="container py-5" style="max-width:500px;">
     <h3 class="text-center mb-4">Đăng ký</h3>
 
     <form method="post">
 
-        <input asp-for="Username" class="form-control mb-1" placeholder="Username" />
+        <input asp-for="Username" class="form-control mb-1" placeholder="Tên đăng nhập (từ 3 - 10 ký tự)" />
         <span asp-validation-for="Username" class="text-danger"></span>
 
-        <input asp-for="Email" class="form-control mb-1" placeholder="Email" />
+        <input asp-for="Email" class="form-control mb-1" placeholder="Email (ví dụ: tenban@gmail.com)" />
         <span asp-validation-for="Email" class="text-danger"></span>
 
-        <input asp-for="Password" type="password" class="form-control mb-1" placeholder="Password" />
+        <input asp-for="Password" type="password" class="form-control mb-1" placeholder="Mật khẩu (tối thiểu 6 ký tự)" />
         <span asp-validation-for="Password" class="text-danger"></span>
 
-        <input asp-for="ConfirmPassword" type="password" class="form-control mb-1" placeholder="Nhập lại Password" />
+        <input asp-for="ConfirmPassword" type="password" class="form-control mb-1" placeholder="Nhập lại mật khẩu (phải trùng khớp)" />
         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
 
         <button class="btn btn-dark w-100 mt-3">Đăng ký</button>

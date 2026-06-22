@@ -276,3 +276,24 @@ h1, h2, h3, h4, h5, h6 {
         margin-right: 0;
     }
 }
+
+/* ========================================= */
+/* HIGH VISIBILITY VALIDATION MESSAGES       */
+/* ========================================= */
+.text-danger:not(:empty) {
+    color: #ff3d3d !important;
+    font-weight: bold !important;
+    background-color: rgba(0, 0, 0, 0.85) !important;
+    border: 1.5px solid #ff3d3d !important;
+    padding: 4px 10px !important;
+    border-radius: 6px !important;
+    display: inline-block !important;
+    margin-top: 4px !important;
+    margin-bottom: 10px !important;
+    box-shadow: 0 0 8px rgba(255, 61, 61, 0.6) !important;
+    font-size: 0.85rem !important;
+}
+
+div.text-danger:not(:empty) {
+    display: block !important;
+}
