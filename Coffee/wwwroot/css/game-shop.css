@@ -39,6 +39,7 @@ html {
 }
 
 .overlay-top::before, .overlay-bottom::after {
+    display: none !important;
     content: "";
     position: absolute;
     left: 0;
