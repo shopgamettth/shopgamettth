@@ -137,6 +137,6 @@ internal class Program
         var host = hostPort.Split(':')[0];
         var port = hostPort.Contains(":") ? hostPort.Split(':')[1] : "5432";
 
-        return $"Host={host};Port={port};Username={user};Password={password};Database={database};SSL Mode=Require;Trust Server Certificate=True;";
+        return $"Host={host};Port={port};Username={user};Password={password};Database={database};SSL Mode=Require;Trust Server Certificate=True;Timeout=60;Command Timeout=60;";
     }
 }
