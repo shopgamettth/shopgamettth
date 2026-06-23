@@ -15,7 +15,8 @@
     <div class="category-scroll-container">
         <a asp-controller="Products"
            asp-action="Index"
-           class="category-btn @(string.IsNullOrWhiteSpace(selectedCategory) ? "active" : "")">
+           asp-route-loai="0"
+           class="category-btn @(selectedCategory == "0" ? "active" : "")">
             <i class="fas fa-th-large me-2"></i> Tất cả
         </a>
 

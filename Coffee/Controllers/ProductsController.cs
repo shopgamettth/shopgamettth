@@ -20,6 +20,16 @@ namespace Coffee.Controllers
         // =========================
         public async Task<IActionResult> Index(int page = 1, int? loai = null, string? sortOrder = null)
         {
+            // If no category is specified (null), default to the first category by redirecting
+            if (loai == null)
+            {
+                var firstCategory = await db.Categories.OrderBy(c => c.CategoryId).FirstOrDefaultAsync();
+                if (firstCategory != null)
+                {
+                    return RedirectToAction("Index", new { loai = firstCategory.CategoryId, sortOrder = sortOrder });
+                }
+            }
+
             int pageSize = 8;
             var productSales = SalesAnalyticsHelper.GetSuccessfulProductSales(db);
 
@@ -27,8 +37,8 @@ namespace Coffee.Controllers
                 .AsNoTracking()
                 .AsQueryable();
 
-            // 🔥 FILTER CATEGORY
-            if (loai.HasValue)
+            // 🔥 FILTER CATEGORY (loai = 0 means show all)
+            if (loai.HasValue && loai.Value != 0)
             {
                 query = query.Where(p => p.CategoryId == loai.Value);
             }
