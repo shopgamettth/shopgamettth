@@ -23,7 +23,7 @@ namespace Coffee.Controllers
             // If no category is specified (null), default to the first category by redirecting
             if (loai == null)
             {
-                var firstCategory = await db.Categories.OrderBy(c => c.CategoryId).FirstOrDefaultAsync();
+                var firstCategory = await db.Categories.OrderBy(c => c.DisplayOrder).ThenBy(c => c.CategoryId).FirstOrDefaultAsync();
                 if (firstCategory != null)
                 {
                     return RedirectToAction("Index", new { loai = firstCategory.CategoryId, sortOrder = sortOrder });
